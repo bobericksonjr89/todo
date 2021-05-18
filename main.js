@@ -1,0 +1,1 @@
+(()=>{"use strict";(()=>{const e={title:"clean",description:"clean the whole house",dueDate:"tomorrow",priority:"level 1",dateAdded:new Date(Date.now())};window.item1=e})()})();
