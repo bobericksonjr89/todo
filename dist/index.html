@@ -22,20 +22,30 @@
         <nav class="header__nav">
             <ul class="header__nav-list">
                 <li class="header__nav-item">
-                    <a href="" class="header__nav-link">New Task</a>
+                    <button class="link header__nav-link">New Task</button>
                 </li>
                 <li class="header__nav-item">
-                    <a href="" class="header__nav-link">New Project</a>
+                    <button class="link header__nav-link">New Project</button>
                 </li>
             </ul>
         </nav>
     </header>
-    <aside class="sidebar">
+    <main class="main">
+        <aside class="sidebar">
+            <div class="sidebar__links">
+                <button class="link sidebar__link sidebar__tasks">All Tasks</button>
+                <div class="sidebar__projects-container sidebar__projects-container--active">  <!-- on active state for styling purposes -->
+                    <button class="link sidebar__link sidebar__projects">Projects &darr;</button> <!-- use link class to restyle buttons -->
+                    <button class="link projects__project">Gardening</button>
+                    <button class="link projects__project">Todo List Application</button>
+                </div>
+            </div>
+        </aside>
+        <div class="main-content">
 
-    </aside>
-    <main class="main-content">
-
+        </div>
     </main>
+
     <script src="main.js"></script>
 </body>
 </html>
