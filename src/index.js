@@ -23,35 +23,55 @@ const App = (() => {
 
     const proj1 = Project("House Chores", "daily house chores", "Friday");
     window.proj1 = proj1;
+    proj1.addTodoTask(item1);
+    proj1.addTodoTask(item2);
     projects.push(proj1);
 
     const proj2 = Project("Make Todo App", "work on it every day", "May 20th");
     window.proj2 = proj2;
+    proj2.addTodoTask(item3);
     projects.push(proj2);
+
+    const proj3 = Project('Third Project', "do it good", "Monday");
+    projects.push(proj3);
 
     // init
     DOM.displayTasks(tasks);
 
     // DOM capture
-    const sidebarLinks = document.querySelectorAll('.sidebar__link');
-    const mainContent = document.querySelector('main-content');
+    const allTasksLink = document.querySelector('.sidebar__tasks');
+    const projectsLink = document.querySelector('.sidebar__projects');
+
 
     // Event Handlers
-    sidebarLinks.forEach(link => link.addEventListener('click', checkSidebarElementForToggle));
-    //USE different events for each button...they're different buttons with different behaviors
+    allTasksLink.addEventListener('click', readyAllTasks);
+    projectsLink.addEventListener('click', readyProjects);
 
     // functions
-    function checkSidebarElementForToggle(e) {
-        let element;
-        if (e.target.className.includes('sidebar__projects')) {
-            element = e.target.parentElement;
-            DOM.displayProjects(element, projects);
-        } else {
-            element = e.target;
-            DOM.displayTasks(tasks)
+    function readyAllTasks(e) {
+        if (!allTasksLink.className.includes('sidebar--active')) {
+            DOM.toggleActiveStatus(allTasksLink, 'sidebar--active')
         }
-        DOM.toggleActiveStatus(element, 'sidebar--active');
+        if (projectsLink.parentElement.className.includes('sidebar--active')) {
+            DOM.clearProjectsList(projectsLink)
+            DOM.toggleActiveStatus(projectsLink.parentElement, 'sidebar--active');
+        }
+        DOM.clearMainContent();
+        DOM.displayTasks(tasks);
     }
 
+    function readyProjects(e) {
+/*         if (allTasksLink.className.includes('sidebar--active')) {
+            DOM.toggleActiveStatus(allTasksLink, 'sidebar--active')
+        } */
+        console.log('yo')
+        if (projectsLink.parentElement.className.includes('sidebar--active')) {
+            DOM.toggleActiveStatus(projectsLink.parentElement, 'sidebar--active');
+            DOM.clearProjectsList(projectsLink);
+            return;
+        }
+        DOM.toggleActiveStatus(projectsLink.parentElement, 'sidebar--active');
+        DOM.displayProjects(projectsLink, projects);
+    }
 
 })();

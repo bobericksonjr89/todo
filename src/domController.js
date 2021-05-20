@@ -2,10 +2,10 @@ const DOM = (function() {
 
     // DOM Capture
     const mainContent = document.querySelector('.main-content');
+    const projectsLink = document.querySelector('.sidebar__projects');
 
     // functions
     function clearMainContent() {
-        console.log(mainContent.childNodes);
         const childNodes = mainContent.childNodes;
         for (let i = childNodes.length - 1; i > 0; i--) {
             mainContent.removeChild(childNodes[i]);
@@ -39,8 +39,13 @@ const DOM = (function() {
         })
     }
 
-
-    
+    function clearProjectsList(element) {
+        console.log(element);
+        const childNodes = element.childNodes;
+        for (let i = childNodes.length - 1; i > 0; i--) {
+            element.removeChild(childNodes[i]);
+        }
+    }
 
     function toggleActiveStatus(element, toggledClass) {
         element.classList.toggle(toggledClass);
@@ -51,16 +56,41 @@ const DOM = (function() {
             const projectButton = document.createElement('button');
             projectButton.classList.add('link', 'projects__project');
             projectButton.innerText = project.title;
+            projectButton.addEventListener('click', (e) => {
+                e.stopPropagation();
+                readyProjectTasks(projectButton, project);
+            });
+
             parentElement.appendChild(projectButton);
         })
     }
 
-    
+    function readyProjectTasks(projectButton, project) {
+        projectButton.classList.add('projects__project--active');
+        clearMainContent();
+        displayTasks(project.getTodoTasks())
+        resetAllTasksButton();
+        resetProjectsButtons(projectButton);
+    }
+
+    function resetAllTasksButton() {
+        document.querySelector('.sidebar__tasks').classList.remove('sidebar--active');
+    }
+
+    function resetProjectsButtons(exceptThisProject) {
+        const childNodes = projectsLink.childNodes;
+        for (let i = childNodes.length - 1; i > 0; i--) {
+            if (childNodes[i].className.includes('projects__project--active') && childNodes[i] != exceptThisProject) {
+                toggleActiveStatus(childNodes[i], 'projects__project--active');
+            }
+        }
+    }
 
 
 
 
-    return { toggleActiveStatus, displayProjects, displayTasks, clearMainContent };
+
+    return { clearMainContent, displayTasks, clearProjectsList, toggleActiveStatus, displayProjects };
 
 })();
 
