@@ -1,6 +1,6 @@
 let ID = 0;
 
-const Project = (title, description, dueDate, priority) => {
+const Project = (title, description, dueDate) => {
     
     const dateAdded = new Date(Date.now());
 
@@ -24,7 +24,7 @@ const Project = (title, description, dueDate, priority) => {
     }
 
 
-    return { title, description, dueDate, priority, dateAdded, getProjectID, getTodoTasks, addTodoTask, removeTodoTask }
+    return { title, description, dueDate, dateAdded, getProjectID, getTodoTasks, addTodoTask, removeTodoTask }
 }
 
 export default Project
