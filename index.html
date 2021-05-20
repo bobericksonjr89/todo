@@ -33,16 +33,27 @@
     <main class="main">
         <aside class="sidebar">
             <div class="sidebar__links">
-                <button class="link sidebar__link sidebar__tasks">All Tasks</button>
-                <div class="sidebar__projects-container sidebar__projects-container--active">  <!-- on active state for styling purposes -->
-                    <button class="link sidebar__link sidebar__projects">Projects &darr;</button> <!-- use link class to restyle buttons -->
-                    <button class="link projects__project">Gardening</button>
-                    <button class="link projects__project">Todo List Application</button>
+                <button class="link sidebar__link sidebar__tasks sidebar--active">All Tasks</button>
+                <div class="sidebar__projects-container"> 
+                    <button class="link sidebar__link sidebar__projects">Projects &darr;</button> <!-- use link class to restyle buttons as links -->
                 </div>
             </div>
         </aside>
         <div class="main-content">
-
+            <div class="task">
+                <div class="task__checkmark">
+                    &#9744;
+                </div>
+                <div class="task__title">
+                    Clean the Kitchen Stairs
+                </div>
+                <div class="task__due-date">
+                    May 20th
+                </div>
+                <button class="task__delete">
+                    Delete
+                </button>
+            </div>
         </div>
     </main>
 

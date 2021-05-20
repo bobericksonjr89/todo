@@ -146,6 +146,12 @@ body {
     transition: color 200ms ease-in-out;
 }
 
+.sidebar__projects-container {
+    display:flex;
+    flex-direction: column;
+    height: auto;
+}
+
 .sidebar__projects {
     color: inherit;
     font-family: inherit;
@@ -153,18 +159,11 @@ body {
 
 .sidebar__tasks:hover,
 .sidebar__projects-container:hover,
-.sidebar__tasks--active,
-.sidebar__projects-container--active {
+.sidebar--active {
     padding: 0;
     padding-left: .5rem;
     color: var(--green-sheen);
     border: 2px solid var(--green-sheen);
-}
-
-.sidebar__projects-container--active {
-    display:flex;
-    flex-direction: column;
-    height: auto;
 }
 
 .sidebar__tasks {
@@ -180,4 +179,58 @@ body {
 
 .projects__project:hover {
     color:var(--green-sheen);
+}
+
+/*-------------------
+    task list
+-------------------*/
+
+.task {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid black;
+    height: 4rem;
+    width: calc(100vw - 20rem);
+    min-width: 45rem;
+    font-family: var(--text);
+    font-size: 2rem;
+    color: var(--independence);
+}
+
+.task__checkmark,
+.task__title,
+.task__due-date,
+.task__delete {
+    margin: 0 1rem;
+    cursor: pointer;
+}
+
+.task__checkmark {
+    width: 2rem;
+}
+
+.task__title {
+    margin-right: auto;
+    min-width: 25rem;
+}
+
+.task__due-date {
+    min-width: 10rem;
+}
+
+.task__delete {
+    height: 2.2rem;
+    width: 5.5rem;
+    font-family: var(--text);
+    font-size: 1.5rem;
+    background-color: transparent;
+    border: 2px solid black;
+    border-radius: .5rem;
+    transition: all 200ms ease-in-out;
+}
+
+.task__delete:hover {
+    color: var(--eggshell);
+    background-color: var(--independence);
 }
