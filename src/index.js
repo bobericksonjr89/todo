@@ -1,12 +1,13 @@
 import Task from './Tasks';
 import Project from './Projects';
-import DOM from './domController';
+import DOM from './domController.js';
 
 
 
 const App = (() => {
 
     const tasks = [];
+    window.tasks = tasks;
     const projects = [];
 
     const item1 = Task("clean", "clean the whole house", "tomorrow", "1");
@@ -37,18 +38,24 @@ const App = (() => {
 
     // init
     DOM.displayTasks(tasks);
+    captureButtons();
 
     // DOM capture
     const allTasksLink = document.querySelector('.sidebar__tasks');
     const projectsLink = document.querySelector('.sidebar__projects');
+    const newTaskLink = document.querySelector('.header__new-task-link')
+    const newProjectLink = document.querySelector('.header__new-project-link');
 
 
     // Event Handlers
     allTasksLink.addEventListener('click', readyAllTasks);
     projectsLink.addEventListener('click', readyProjects);
+    newTaskLink.addEventListener('click', readyNewTask);
+    newProjectLink.addEventListener('click', readyNewProject);
+
 
     // functions
-    function readyAllTasks(e) {
+    function readyAllTasks() {
         if (!allTasksLink.className.includes('sidebar--active')) {
             DOM.toggleActiveStatus(allTasksLink, 'sidebar--active')
         }
@@ -58,13 +65,10 @@ const App = (() => {
         }
         DOM.clearMainContent();
         DOM.displayTasks(tasks);
+        captureButtons();
     }
 
-    function readyProjects(e) {
-/*         if (allTasksLink.className.includes('sidebar--active')) {
-            DOM.toggleActiveStatus(allTasksLink, 'sidebar--active')
-        } */
-        console.log('yo')
+    function readyProjects() {
         if (projectsLink.parentElement.className.includes('sidebar--active')) {
             DOM.toggleActiveStatus(projectsLink.parentElement, 'sidebar--active');
             DOM.clearProjectsList(projectsLink);
@@ -74,4 +78,44 @@ const App = (() => {
         DOM.displayProjects(projectsLink, projects);
     }
 
+    function readyNewTask() {
+
+    }
+
+    function readyNewProject() {
+
+    }
+
+    function captureButtons() {
+        const deleteButtons = document.querySelectorAll('.task__delete');
+        deleteButtons.forEach(button => button.addEventListener('click', function() {
+            deleteTaskFromProjects(button.dataset.id);
+            deleteTask(button.dataset.id);
+            DOM.removeTask(button.parentElement);
+        }));
+    }
+
+
+    function deleteTask(taskID) {
+        if (confirm("You want to delete this task?")) {
+            const index = tasks.findIndex(task => task.getTaskID() === taskID);
+            tasks.splice(index, 1);
+        }
+    }
+
+    function deleteTaskFromProjects(taskID) {
+        const taskToDelete = tasks.find(task => task.getTaskID() === parseInt(taskID));
+        console.log(taskToDelete);
+        projects.forEach((project) => {
+            if (project.getTodoTasks().includes(taskToDelete)) {
+                project.removeTodoTask(taskToDelete);
+            }
+        });
+    }
+
+
+    return { captureButtons }
+
 })();
+
+export default App

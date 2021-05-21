@@ -1,3 +1,5 @@
+import App from './index.js';
+
 const DOM = (function() {
 
     // DOM Capture
@@ -32,6 +34,8 @@ const DOM = (function() {
 
             const deleteButton = document.createElement('button')
             deleteButton.classList.add('task__delete');
+            deleteButton.setAttribute('data-id', task.getTaskID());
+            //deleteButton.addEventListener('click', deleteTask.bind(button.dataset.id);
             deleteButton.innerText = 'Delete';
 
             taskDiv.append(checkmarkDiv, titleDiv, dueDateDiv, deleteButton);
@@ -40,7 +44,6 @@ const DOM = (function() {
     }
 
     function clearProjectsList(element) {
-        console.log(element);
         const childNodes = element.childNodes;
         for (let i = childNodes.length - 1; i > 0; i--) {
             element.removeChild(childNodes[i]);
@@ -69,6 +72,7 @@ const DOM = (function() {
         projectButton.classList.add('projects__project--active');
         clearMainContent();
         displayTasks(project.getTodoTasks())
+        App.captureButtons();
         resetAllTasksButton();
         resetProjectsButtons(projectButton);
     }
@@ -86,11 +90,12 @@ const DOM = (function() {
         }
     }
 
+    function removeTask(div) {
+        div.remove();
+    };
 
 
-
-
-    return { clearMainContent, displayTasks, clearProjectsList, toggleActiveStatus, displayProjects };
+    return { clearMainContent, displayTasks, clearProjectsList, toggleActiveStatus, displayProjects, removeTask };
 
 })();
 

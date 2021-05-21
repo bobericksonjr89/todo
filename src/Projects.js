@@ -19,7 +19,7 @@ const Project = (title, description, dueDate) => {
 
     function removeTodoTask(task) {
         let id = task.getTaskID();
-        let index = todoTask.findIndex(task => task.getTaskID() === id)
+        let index = todoTasks.findIndex(task => task.getTaskID() === id)
         todoTasks.splice(index, 1);
     }
 

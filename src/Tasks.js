@@ -5,7 +5,7 @@ const Task = (title, description, dueDate, priority) => {
     const dateAdded = new Date(Date.now());
     
     const taskID = ID++;
-    const getTaskID = () => TaskID;
+    const getTaskID = () => taskID;
 
     let isComplete = false;
     function toggleCompletionStatus() {
