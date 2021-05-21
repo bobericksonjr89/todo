@@ -39,12 +39,15 @@ html {
 
     --header: 'Libre Caslon Text', serif;
     --text: 'Roboto', sans-serif;
+
+    --width-main-content: calc(100vw - 20rem);
 }
 
 
 
 body {
     background-color: var(--eggshell);
+
 }
 
 .link {
@@ -194,7 +197,7 @@ body {
     align-items: center;
     border-bottom: 1px solid black;
     height: 4rem;
-    width: calc(100vw - 20rem);
+    width: var(--width-main-content);
     min-width: 45rem;
     font-family: var(--text);
     font-size: 2rem;
@@ -217,11 +220,24 @@ body {
     min-width: 25rem;
 }
 
+.task__title--priority1 {
+    color: var(--green-sheen);
+}
+
+.task__title--priority2 {
+    color: var(--deep-champagne);
+}
+
+.task__title--priority3 {
+    color: var(--terra-cotta);
+}
+
 .task__due-date {
     min-width: 10rem;
 }
 
-.task__delete {
+.task__delete,
+.project-header__delete {
     cursor: pointer;
     margin: 0 2rem 0 1rem;
     height: 2.2rem;
@@ -234,7 +250,43 @@ body {
     transition: all 200ms ease-in-out;
 }
 
-.task__delete:hover {
+.task__delete:hover,
+.project-header__delete:hover {
     color: var(--eggshell);
     background-color: var(--independence);
+}
+
+/*-------------------
+    project-header
+-------------------*/
+
+.project-header {
+    display:flex;
+    height: 4rem;
+    width: var(--width-main-content);
+    justify-content: space-between;
+    align-items: center;
+    min-width: 45rem;
+
+    margin-bottom: 2rem;
+}
+
+.project-header__title {
+    color: var(--independence);
+    font-family: var(--header);
+    font-size: 3rem;
+    margin: 0 1rem;
+    min-width: 25rem;
+}
+
+.project-header__description {
+    color: var(--independence);
+    font-family: var(--text);
+    font-size: 1.5rem;
+    margin: 0 1rem;
+    min-width: 30rem;
+}
+
+.project-header__delete {
+    /* see above */
 }
