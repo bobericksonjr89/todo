@@ -22,7 +22,7 @@ const App = (() => {
     window.item3 = item3;
     tasks.push(item3);
 
-    const proj1 = Project("House Chores", "daily house chores", "Friday");
+    const proj1 = Project("House Chores", "daily house chores to be done Monday-Friday, twice a day, and without fail.", "Friday");
     window.proj1 = proj1;
     proj1.addTodoTask(item1);
     proj1.addTodoTask(item2);
@@ -35,6 +35,7 @@ const App = (() => {
 
     const proj3 = Project('Third Project', "do it good", "Monday");
     projects.push(proj3);
+    window.projects = projects;
 
     // init
     DOM.displayTasks(tasks);
@@ -89,18 +90,21 @@ const App = (() => {
     function captureButtons() {
         const deleteButtons = document.querySelectorAll('.task__delete');
         deleteButtons.forEach(button => button.addEventListener('click', function() {
-            deleteTaskFromProjects(button.dataset.id);
-            deleteTask(button.dataset.id);
-            DOM.removeTask(button.parentElement);
+            confirmDeletion(button);
         }));
     }
 
-
-    function deleteTask(taskID) {
+    function confirmDeletion(button) {
         if (confirm("You want to delete this task?")) {
+            deleteTaskFromProjects(button.dataset.id);
+            deleteTask(button.dataset.id);
+            DOM.removeTask(button.parentElement);
+        }
+    }
+
+    function deleteTask(taskID) { 
             const index = tasks.findIndex(task => task.getTaskID() === taskID);
             tasks.splice(index, 1);
-        }
     }
 
     function deleteTaskFromProjects(taskID) {
@@ -113,8 +117,21 @@ const App = (() => {
         });
     }
 
+    function deleteProject(project) {
+        confirmDeleteTasks(project);
+        const index = projects.findIndex(item => item.getProjectID() === project.getProjectID());
+        projects.splice(index, 1);
+    }
 
-    return { captureButtons }
+    function confirmDeleteTasks(project) {
+        if (confirm('Do you also want to delete its tasks?')) {
+            const taskArray = project.getTodoTasks();
+            taskArray.forEach(task => deleteTask(task.getTaskID()));
+        }
+    }
+
+
+    return { captureButtons, deleteProject }
 
 })();
 

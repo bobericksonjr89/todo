@@ -1,13 +1,15 @@
 let ID = 0;
 
-const Project = (title, description, dueDate) => {
-    
-    const dateAdded = new Date(Date.now());
+const Project = (title, description) => {
 
     const projectID = ID++;
     const getProjectID = () => projectID;
 
     const todoTasks = [];
+
+    const getTitle = () => title;
+
+    const getDescription = () => description;
 
     function getTodoTasks() {
         return todoTasks;
@@ -24,7 +26,7 @@ const Project = (title, description, dueDate) => {
     }
 
 
-    return { title, description, dueDate, dateAdded, getProjectID, getTodoTasks, addTodoTask, removeTodoTask }
+    return { getTitle, getDescription, getProjectID, getTodoTasks, addTodoTask, removeTodoTask }
 }
 
 export default Project

@@ -25,7 +25,7 @@ const DOM = (function() {
             checkmarkDiv.innerText = '☐'
 
             const titleDiv = document.createElement('div')
-            titleDiv.classList.add('task__title');
+            titleDiv.classList.add('task__title', `task__title--priority${task.priority}`);
             titleDiv.innerText = task.title;
 
             const dueDateDiv = document.createElement('div')
@@ -35,7 +35,6 @@ const DOM = (function() {
             const deleteButton = document.createElement('button')
             deleteButton.classList.add('task__delete');
             deleteButton.setAttribute('data-id', task.getTaskID());
-            //deleteButton.addEventListener('click', deleteTask.bind(button.dataset.id);
             deleteButton.innerText = 'Delete';
 
             taskDiv.append(checkmarkDiv, titleDiv, dueDateDiv, deleteButton);
@@ -58,7 +57,7 @@ const DOM = (function() {
         projects.forEach((project) => {
             const projectButton = document.createElement('button');
             projectButton.classList.add('link', 'projects__project');
-            projectButton.innerText = project.title;
+            projectButton.innerText = project.getTitle();
             projectButton.addEventListener('click', (e) => {
                 e.stopPropagation();
                 readyProjectTasks(projectButton, project);
@@ -71,11 +70,36 @@ const DOM = (function() {
     function readyProjectTasks(projectButton, project) {
         projectButton.classList.add('projects__project--active');
         clearMainContent();
+        displayProjectHeader(project);
         displayTasks(project.getTodoTasks())
         App.captureButtons();
         resetAllTasksButton();
         resetProjectsButtons(projectButton);
     }
+
+    function displayProjectHeader(project) {
+        const projectHeaderDiv = document.createElement('div');
+        projectHeaderDiv.classList.add('project-header');
+        
+        const projectHeaderTitle = document.createElement('h3');
+        projectHeaderTitle.classList.add('project-header__title');
+        projectHeaderTitle.innerText = project.getTitle();
+
+        const projectHeaderDescription = document.createElement('p');
+        projectHeaderDescription.classList.add('project-header__description');
+        projectHeaderDescription.innerText = project.getDescription();
+
+        const projectHeaderDeleteButton = document.createElement('button');
+        projectHeaderDeleteButton.classList.add('project-header__delete');
+        projectHeaderDeleteButton.innerText = "Delete";
+        projectHeaderDeleteButton.addEventListener('click', function() {
+            readyDeleteProject(project);
+        });
+
+        projectHeaderDiv.append(projectHeaderTitle, projectHeaderDescription, projectHeaderDeleteButton);
+        mainContent.append(projectHeaderDiv);
+    }
+
 
     function resetAllTasksButton() {
         document.querySelector('.sidebar__tasks').classList.remove('sidebar--active');
@@ -93,6 +117,17 @@ const DOM = (function() {
     function removeTask(div) {
         div.remove();
     };
+
+    function readyDeleteProject(project) {
+        if (confirm(`Do you really want to delete ${project.getTitle()}?`)) {
+            //removeProject();
+            App.deleteProject(project);
+            clearMainContent();
+            projectsLink.click();
+            projectsLink.click();
+            
+        }
+    }
 
 
     return { clearMainContent, displayTasks, clearProjectsList, toggleActiveStatus, displayProjects, removeTask };
