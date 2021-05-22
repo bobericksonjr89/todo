@@ -61,7 +61,7 @@ const App = (() => {
             DOM.toggleActiveStatus(allTasksLink, 'sidebar--active')
         }
         if (projectsLink.parentElement.className.includes('sidebar--active')) {
-            DOM.clearProjectsList(projectsLink)
+            DOM.clearProjectsList();
             DOM.toggleActiveStatus(projectsLink.parentElement, 'sidebar--active');
         }
         DOM.clearMainContent();
@@ -72,7 +72,7 @@ const App = (() => {
     function readyProjects() {
         if (projectsLink.parentElement.className.includes('sidebar--active')) {
             DOM.toggleActiveStatus(projectsLink.parentElement, 'sidebar--active');
-            DOM.clearProjectsList(projectsLink);
+            DOM.clearProjectsList();
             return;
         }
         DOM.toggleActiveStatus(projectsLink.parentElement, 'sidebar--active');
@@ -80,7 +80,30 @@ const App = (() => {
     }
 
     function readyNewTask() {
+        DOM.clearMainContent();
+        DOM.newTaskForm(projects);
+        document.querySelector('.task-form__submit').addEventListener('click', () =>{
+            saveTask();
+            DOM.clearMainContent();
+            DOM.displayTasks(tasks);
+            captureButtons();
+        });
+    }
 
+    function saveTask() {
+        const form = document.querySelector('.task-form');
+        const data = new FormData(form);
+        const title = data.get('title');
+        const description = data.get('description');
+        const project = data.get('project');
+        const priority = data.get('priority');
+        const dueDate = data.get('due-date');
+
+        console.log(title, typeof title, description, typeof description, project, 
+            typeof project, priority, typeof priority, dueDate, typeof dueDate);
+
+        const newTask = Task(title, description, dueDate, priority);
+        tasks.push(newTask);
     }
 
     function readyNewProject() {
@@ -103,7 +126,10 @@ const App = (() => {
     }
 
     function deleteTask(taskID) { 
-            const index = tasks.findIndex(task => task.getTaskID() === taskID);
+            console.log(taskID);
+            console.log(tasks);
+            const index = tasks.findIndex(task => task.getTaskID() === parseInt(taskID));
+            console.log(index);
             tasks.splice(index, 1);
     }
 
@@ -131,7 +157,8 @@ const App = (() => {
     }
 
 
-    return { captureButtons, deleteProject }
+
+    return { captureButtons, deleteProject, saveTask }
 
 })();
 
