@@ -2,6 +2,8 @@ import Task from './Tasks';
 import Project from './Projects';
 import DOM from './domController.js';
 
+import { parseISO } from 'date-fns';
+
 
 
 const App = (() => {
@@ -10,15 +12,15 @@ const App = (() => {
     window.tasks = tasks;
     const projects = [];
 
-    const item1 = Task("clean", "clean the whole house", "tomorrow", "1");
+    const item1 = Task("clean", "clean the whole house", new Date('May 30, 2021 23:15:30'), "1");
     window.item1 = item1;
     tasks.push(item1);
 
-    const item2 = Task("work", "work hard", "yesterday", "2");
+    const item2 = Task("work", "work hard", new Date('May 23, 2021 23:15:30'), "2");
     window.item2 = item2;
     tasks.push(item2);
 
-    const item3 = Task("study", "study all day", "end of year", "3");
+    const item3 = Task("study", "study all day", new Date('May 26, 2021 23:15:30'), "3");
     window.item3 = item3;
     tasks.push(item3);
 
@@ -56,6 +58,18 @@ const App = (() => {
 
 
     // functions
+    function captureButtons() {
+        const deleteButtons = document.querySelectorAll('.task__delete');
+        deleteButtons.forEach(button => button.addEventListener('click', function() {
+            confirmDeletion(button);
+        }));
+
+        const completionButtons = document.querySelectorAll('.task__checkmark');
+        completionButtons.forEach(button => button.addEventListener('click', function() {
+            toggleCompletion(button);
+        }));
+    }
+
     function readyAllTasks() {
         if (!allTasksLink.className.includes('sidebar--active')) {
             DOM.toggleActiveStatus(allTasksLink, 'sidebar--active')
@@ -82,39 +96,54 @@ const App = (() => {
     function readyNewTask() {
         DOM.clearMainContent();
         DOM.newTaskForm(projects);
-        document.querySelector('.task-form__submit').addEventListener('click', () =>{
-            saveTask();
+        document.querySelector('.task-form').addEventListener('submit', () => {
+            const form = document.querySelector('.task-form');
+            const data = new FormData(form);
+            saveTask(data);
             DOM.clearMainContent();
             DOM.displayTasks(tasks);
             captureButtons();
         });
     }
 
-    function saveTask() {
-        const form = document.querySelector('.task-form');
-        const data = new FormData(form);
+    function saveTask(data) {
         const title = data.get('title');
         const description = data.get('description');
         const project = data.get('project');
         const priority = data.get('priority');
-        const dueDate = data.get('due-date');
-
-        console.log(title, typeof title, description, typeof description, project, 
-            typeof project, priority, typeof priority, dueDate, typeof dueDate);
+        const dueDate = parseISO(data.get('due-date'));
 
         const newTask = Task(title, description, dueDate, priority);
         tasks.push(newTask);
+
+        pushToProject(newTask, project);
+    }
+
+    function pushToProject(task, projectTitle) {
+        console.log(projectTitle);
+        if (projectTitle === '') return;
+        const project = projects.find(project => project.getTitle() === projectTitle)
+        project.addTodoTask(task);
     }
 
     function readyNewProject() {
-
+        DOM.clearMainContent();
+        DOM.newProjectForm();
+        document.querySelector('.project-form').addEventListener('submit', () => {
+            const form = document.querySelector('.project-form');
+            const data = new FormData(form);
+            saveProject(data);
+            DOM.clearMainContent();
+            DOM.displayTasks(tasks);
+            captureButtons();
+        });
     }
 
-    function captureButtons() {
-        const deleteButtons = document.querySelectorAll('.task__delete');
-        deleteButtons.forEach(button => button.addEventListener('click', function() {
-            confirmDeletion(button);
-        }));
+    function toggleCompletion(button) {
+        const taskID = button.dataset.id;
+        const task = tasks.find(task => task.getTaskID() === parseInt(taskID));
+        task.toggleCompletionStatus();
+        DOM.toggleCompletionIcon(button);
     }
 
     function confirmDeletion(button) {
@@ -126,16 +155,12 @@ const App = (() => {
     }
 
     function deleteTask(taskID) { 
-            console.log(taskID);
-            console.log(tasks);
             const index = tasks.findIndex(task => task.getTaskID() === parseInt(taskID));
-            console.log(index);
             tasks.splice(index, 1);
     }
 
     function deleteTaskFromProjects(taskID) {
         const taskToDelete = tasks.find(task => task.getTaskID() === parseInt(taskID));
-        console.log(taskToDelete);
         projects.forEach((project) => {
             if (project.getTodoTasks().includes(taskToDelete)) {
                 project.removeTodoTask(taskToDelete);

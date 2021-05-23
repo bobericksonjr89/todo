@@ -238,7 +238,9 @@ body {
 }
 
 .task__due-date {
-    min-width: 10rem;
+    text-align: right;
+    margin-left: auto;
+    min-width: 15rem;
 }
 
 .task__delete,
@@ -309,7 +311,6 @@ body {
 .task-form {
     background-color: var(--deep-champagne);
     margin-top: 5rem;
-    margin-left: 1rem;
     width: 40rem;
     height: 16rem;
     border: 3px solid var(--independence);

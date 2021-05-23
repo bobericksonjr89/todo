@@ -22,16 +22,23 @@ const DOM = (function() {
 
             const checkmarkDiv = document.createElement('div')
             checkmarkDiv.classList.add('task__checkmark');
-
-            checkmarkDiv.innerText = '☐'
+            if (task.isComplete === true) {
+                checkmarkDiv.innerText = '☑'
+            } else {
+                checkmarkDiv.innerText = '☐'
+            }
+            checkmarkDiv.setAttribute('data-id', task.getTaskID());
 
             const titleDiv = document.createElement('div')
             titleDiv.classList.add('task__title', `task__title--priority${task.priority}`);
             titleDiv.innerText = task.title;
+            titleDiv.setAttribute('data-id', task.getTaskID());
 
             const dueDateDiv = document.createElement('div')
             dueDateDiv.classList.add('task__due-date');
-            dueDateDiv.innerText = task.dueDate;
+            const dueDate = task.parseDueDate();
+            dueDateDiv.innerText = dueDate; 
+            dueDateDiv.setAttribute('data-id', task.getTaskID());
 
             const deleteButton = document.createElement('button')
             deleteButton.classList.add('task__delete');
@@ -41,6 +48,14 @@ const DOM = (function() {
             taskDiv.append(checkmarkDiv, titleDiv, dueDateDiv, deleteButton);
             mainContent.append(taskDiv);
         })
+    }
+
+    function toggleCompletionIcon(button) {
+        if (button.innerText === '☑') {
+            button.innerText = '☐';
+        } else {
+            button.innerText = '☑';
+        }
     }
 
     function clearProjectsList() {
@@ -154,15 +169,19 @@ const DOM = (function() {
         title.setAttribute('type', 'text');
         title.name = "title";
         title.placeholder = "Title";
+        title.required = true;
+        title.setAttribute('maxlength', '25');
 
         const description = document.createElement('textarea');
         description.classList.add('task-form__description');
         description.name = "description";
         description.placeholder = "Description";
+        description.required = true;
 
         const projectsSelect = document.createElement('select');
         projectsSelect.classList.add('task-form__projects');
         projectsSelect.name = "project";
+        projectsSelect.required = true;
 
         const defaultOption = document.createElement('option');
         defaultOption.setAttribute('value', '');
@@ -193,8 +212,9 @@ const DOM = (function() {
         const priority = document.createElement('select');
         priority.classList.add('task-form__priority');
         priority.name = "priority";
+        priority.required = true;
 
-        const defaultPriority = document.createElement('option');;
+        const defaultPriority = document.createElement('option');
         defaultPriority.setAttribute('value', '');
         defaultPriority.innerText = "Choose Priority";
         defaultPriority.disabled = true;
@@ -220,6 +240,7 @@ const DOM = (function() {
         dueDate.classList.add('task-form__due-date');
         dueDate.setAttribute('type', 'date');
         dueDate.name = "due-date";
+        dueDate.required = true;
 
         dueDateGroup.append(dueDateLabel, dueDate);
 
@@ -231,11 +252,20 @@ const DOM = (function() {
 
         formContainer.append(leftDiv, rightDiv);
         container.append(formContainer);
-        mainContent.append(container);
+        
+        mainContent.appendChild(container);
+    }
+
+    function newProjectForm() {
+        resetAllTasksButton();
+        clearProjectsList();
+        resetProjectsButton();
+
+        
     }
 
 
-    return { clearMainContent, displayTasks, clearProjectsList, toggleActiveStatus, displayProjects, removeTask, newTaskForm };
+    return { clearMainContent, displayTasks, toggleCompletionIcon, clearProjectsList, toggleActiveStatus, displayProjects, removeTask, newTaskForm, newProjectForm };
 
 })();
 
