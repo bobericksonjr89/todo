@@ -40,14 +40,17 @@ html {
     --header: 'Libre Caslon Text', serif;
     --text: 'Roboto', sans-serif;
 
-    --width-main-content: calc(100vw - 20rem);
+    --width-main-content: calc(100vw - 19.2rem);
 }
 
 
 
 body {
     background-color: var(--eggshell);
+}
 
+.main-content {
+    width: var(--width-main-content);
 }
 
 .link {
@@ -78,6 +81,7 @@ body {
 
 .header__headers {
     margin-left: 1rem;
+    cursor:default;
 }
 
 .header__title {
@@ -157,6 +161,8 @@ body {
 .sidebar__projects {
     color: inherit;
     font-family: inherit;
+    display:flex;
+    flex-direction: column;
 }
 
 .sidebar__tasks:hover,
@@ -403,6 +409,66 @@ body {
 }
 
 .task-form__submit:hover {
+    color: var(--eggshell);
+    background-color: var(--independence);
+}
+
+/*-------------------
+    project-form
+-------------------*/
+
+.project-form__container {
+    display: flex;
+    justify-content: center;
+    width: var(--width-main-content);
+}
+
+.project-form {
+    background-color: var(--deep-champagne);
+    padding: 1rem;
+    margin-top: 5rem;
+    width: 40rem;
+    height: 16rem;
+    border: 3px solid var(--independence);
+    border-radius: 1rem;
+    font-family: var(--text);
+    display:flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.project-form__title {
+    font-family: inherit;
+    width: 21rem;
+    height: 3rem;
+    font-size: 1.5rem;
+    border: 2px solid var(--independence);
+    background-color: var(--eggshell);
+}
+
+.project-form__description {
+    font-family: inherit;
+    height: 6rem;
+    font-size: 1.5rem;
+    resize: none;
+    border: 2px solid var(--independence);
+    background-color: var(--eggshell);
+}
+
+.project-form__submit {
+    align-self: flex-end;
+    width: 10rem;
+    height: 2rem;
+    font-size: 1rem;
+    font-family: inherit;
+    cursor: pointer;
+    background-color: var(--eggshell);
+    border: 2px solid black;
+    border-radius: .5rem;
+    transition: all 200ms ease-in-out;
+}
+
+.project-form__submit:hover {
     color: var(--eggshell);
     background-color: var(--independence);
 }
