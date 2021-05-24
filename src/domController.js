@@ -171,17 +171,20 @@ const DOM = (function() {
         title.placeholder = "Title";
         title.required = true;
         title.setAttribute('maxlength', '25');
+        title.ariaLabel = "task title";
 
         const description = document.createElement('textarea');
         description.classList.add('task-form__description');
         description.name = "description";
         description.placeholder = "Description";
         description.required = true;
+        description.ariaLabel = "task description";
 
         const projectsSelect = document.createElement('select');
         projectsSelect.classList.add('task-form__projects');
         projectsSelect.name = "project";
         projectsSelect.required = true;
+        projectsSelect.ariaLabel = "select a project to which the task will be added";
 
         const defaultOption = document.createElement('option');
         defaultOption.setAttribute('value', '');
@@ -207,12 +210,13 @@ const DOM = (function() {
         const rightDiv = document.createElement('div');
         rightDiv.classList.add('task-form__right-side');
 
-        const priorities = ['low', 'medium', 'high'];
+        const priorities = ['Low', 'Medium', 'High'];
         let priorityValue = 0;
         const priority = document.createElement('select');
         priority.classList.add('task-form__priority');
         priority.name = "priority";
         priority.required = true;
+        priority.ariaLabel = "select a priority for the task";
 
         const defaultPriority = document.createElement('option');
         defaultPriority.setAttribute('value', '');
@@ -261,7 +265,38 @@ const DOM = (function() {
         clearProjectsList();
         resetProjectsButton();
 
+        const container = document.createElement('div');
+        container.classList.add('project-form__container');
+
+        const formContainer = document.createElement('form');
+        formContainer.classList.add('project-form');
+
+        const title = document.createElement('input');
+        title.classList.add('project-form__title');
+        title.setAttribute('type', 'text');
+        title.name = "title";
+        title.placeholder = "Project Title";
+        title.required = true;
+        title.setAttribute('maxlength', '25');
+        title.ariaLabel = "project title";
         
+
+        const description = document.createElement('textarea');
+        description.classList.add('project-form__description');
+        description.name = "description"'
+        description.placeholder = "Description";
+        description.required = true;
+        description.setAttribute('maxlength', '75');
+        description.ariaLabel = "project description";
+
+        const submit = document.createElement('input');
+        submit.classList.add('project-form__submit');
+        submit.setAttribute('type', 'submit');
+
+        formContainer.append(title, description, submit);
+
+        container.append(formContainer);
+        mainContent.append(container);
     }
 
 

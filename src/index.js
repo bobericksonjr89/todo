@@ -131,12 +131,25 @@ const App = (() => {
         DOM.newProjectForm();
         document.querySelector('.project-form').addEventListener('submit', () => {
             const form = document.querySelector('.project-form');
+            console.log(form);
             const data = new FormData(form);
+            console.log(data.get('title'));
             saveProject(data);
             DOM.clearMainContent();
             DOM.displayTasks(tasks);
             captureButtons();
         });
+    }
+
+    function saveProject(data) {
+        const title = data.get('title');
+        const description = data.get('description');
+
+        console.log(title, description);
+
+        const newProject = Project(title, description);
+        console.log(newProject);
+        projects.push(newProject);
     }
 
     function toggleCompletion(button) {
