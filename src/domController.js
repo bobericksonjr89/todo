@@ -15,10 +15,54 @@ const DOM = (function() {
         }
     }
 
+    function taskView(button, task) {
+        const parentDiv = button.parentElement.parentElement;
+        if (parentDiv.dataset.expanded === 'true') {
+            shrinkTask(parentDiv);
+            return;
+        }
+        parentDiv.style.height = '8rem';
+        parentDiv.dataset.expanded = true;
+
+        window.setTimeout(function() {
+            loadExpandedTask(parentDiv, task);
+        }, 200);
+    }
+
+    function loadExpandedTask(parentDiv, task) {
+        const expandedDiv = document.createElement('div');
+        expandedDiv.classList.add('task__more');
+
+        const description = document.createElement('div');
+        description.innerText = task.description;
+        description.classList.add('task__description');
+
+        const dateAdded = document.createElement('div');
+        dateAdded.innerText = `Added: ${task.parseDateAdded()}`;
+        dateAdded.classList.add('task__date-added');
+
+        const edit = document.createElement('button');
+        edit.innerText = "Edit";
+        edit.classList.add('task__edit');
+        edit.setAttribute('data-id', task.getTaskID())
+
+        expandedDiv.append(description, dateAdded, edit);
+        parentDiv.append(expandedDiv);
+    }
+
+    function shrinkTask(parentDiv) {
+        parentDiv.removeChild(parentDiv.lastChild);
+        parentDiv.style.height = '4rem';
+        parentDiv.dataset.expanded = false;
+    }
+
     function displayTasks(tasks) {
         tasks.forEach(task => {
-            const taskDiv = document.createElement('div')
-            taskDiv.classList.add('task');
+            const taskContainer = document.createElement('div')
+            taskContainer.classList.add('task');
+
+            const taskShrunk = document.createElement('div')
+            taskShrunk.classList.add('task__shrunk');
 
             const checkmarkDiv = document.createElement('div')
             checkmarkDiv.classList.add('task__checkmark');
@@ -45,8 +89,9 @@ const DOM = (function() {
             deleteButton.setAttribute('data-id', task.getTaskID());
             deleteButton.innerText = 'Delete';
 
-            taskDiv.append(checkmarkDiv, titleDiv, dueDateDiv, deleteButton);
-            mainContent.append(taskDiv);
+            taskShrunk.append(checkmarkDiv, titleDiv, dueDateDiv, deleteButton);
+            taskContainer.append(taskShrunk);
+            mainContent.append(taskContainer);
         })
     }
 
@@ -149,8 +194,7 @@ const DOM = (function() {
     }
 
 
-
-    function newTaskForm(projects) {
+    function taskForm(projects, task) {
         resetAllTasksButton();
         clearProjectsList();
         resetProjectsButton();
@@ -168,7 +212,7 @@ const DOM = (function() {
         title.classList.add('task-form__title');
         title.setAttribute('type', 'text');
         title.name = "title";
-        title.placeholder = "Title";
+        title.placeholder = " Title";
         title.required = true;
         title.setAttribute('maxlength', '25');
         title.ariaLabel = "task title";
@@ -176,8 +220,9 @@ const DOM = (function() {
         const description = document.createElement('textarea');
         description.classList.add('task-form__description');
         description.name = "description";
-        description.placeholder = "Description";
+        description.placeholder = " Description";
         description.required = true;
+        description.setAttribute('maxlength', '75');
         description.ariaLabel = "task description";
 
         const projectsSelect = document.createElement('select');
@@ -252,6 +297,21 @@ const DOM = (function() {
         submit.classList.add('task-form__submit');
         submit.setAttribute('type', 'submit');
 
+        if (task) {
+            title.value = task.title;
+            description.value = task.description;
+            
+            projects.forEach((project) => {
+                if (project.getTodoTasks().includes(task)) {
+                    projectsSelect.value = project.getTitle();
+                }
+            });
+
+            priority.value = task.priority;
+            dueDate.valueAsDate = task.dueDate;
+            submit.dataset.isEdit = true;
+        }
+
         rightDiv.append(priority, dueDateGroup, submit);
 
         formContainer.append(leftDiv, rightDiv);
@@ -275,7 +335,7 @@ const DOM = (function() {
         title.classList.add('project-form__title');
         title.setAttribute('type', 'text');
         title.name = "title";
-        title.placeholder = "Project Title";
+        title.placeholder = " Project Title";
         title.required = true;
         title.setAttribute('maxlength', '25');
         title.ariaLabel = "project title";
@@ -283,8 +343,8 @@ const DOM = (function() {
 
         const description = document.createElement('textarea');
         description.classList.add('project-form__description');
-        description.name = "description"'
-        description.placeholder = "Description";
+        description.name = "description";
+        description.placeholder = " Description";
         description.required = true;
         description.setAttribute('maxlength', '75');
         description.ariaLabel = "project description";
@@ -300,7 +360,7 @@ const DOM = (function() {
     }
 
 
-    return { clearMainContent, displayTasks, toggleCompletionIcon, clearProjectsList, toggleActiveStatus, displayProjects, removeTask, newTaskForm, newProjectForm };
+    return { clearMainContent, taskView, displayTasks, toggleCompletionIcon, clearProjectsList, toggleActiveStatus, displayProjects, removeTask, taskForm, newProjectForm };
 
 })();
 

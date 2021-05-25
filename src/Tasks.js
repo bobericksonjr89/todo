@@ -51,7 +51,7 @@ const Task = (title, description, dueDate, priority) => {
         return format(dateAdded, "MMM do',' yyyy");
     }
 
-    return { title, description, priority, dateAdded, getTaskID, isComplete, toggleCompletionStatus, parseDueDate, parseDateAdded }
+    return { title, description, priority, dueDate, getTaskID, isComplete, toggleCompletionStatus, parseDueDate, parseDateAdded }
 } 
 
 export default Task

@@ -20,7 +20,7 @@ const App = (() => {
     window.item2 = item2;
     tasks.push(item2);
 
-    const item3 = Task("study", "study all day", new Date('May 26, 2021 23:15:30'), "3");
+    const item3 = Task("study", "daily house chores to be done Monday-Friday, twice a day, and without fail", new Date('May 26, 2021 23:15:30'), "3");
     window.item3 = item3;
     tasks.push(item3);
 
@@ -68,6 +68,59 @@ const App = (() => {
         completionButtons.forEach(button => button.addEventListener('click', function() {
             toggleCompletion(button);
         }));
+
+        const taskTitles = document.querySelectorAll('.task__title');
+        taskTitles.forEach(button => button.addEventListener('click', function (){
+            readyTaskView(button);
+        }));
+        
+        const taskDueDates = document.querySelectorAll('.task__due-date');
+        taskDueDates.forEach(button => button.addEventListener('click', function() {
+            readyTaskView(button);
+        }));
+    }
+
+    function readyTaskView(button) {
+        const taskID = button.dataset.id;
+        const task = tasks.find(task => task.getTaskID() === parseInt(taskID));
+        DOM.taskView(button, task);
+        window.setTimeout(function() {
+            captureEditButton(task, taskID);
+        }, 200);
+    }
+
+
+    function captureEditButton(task, taskID) {
+        const editButton = document.querySelector(`.task__edit[data-id='${taskID}']`);
+        if (!editButton) {
+            return;
+        }
+        editButton.addEventListener('click', function() {
+            DOM.clearMainContent();
+            DOM.taskForm(projects, task);
+            document.querySelector('.task-form').addEventListener('submit', function() {
+                const form = document.querySelector('.task-form');
+                const data = new FormData(form);
+                console.log(data);
+                saveTaskEdit(data, task);
+                DOM.clearMainContent();
+                DOM.displayTasks(tasks);
+                captureButtons();
+            });
+        });
+    }
+
+    function saveTaskEdit(data, task) {
+        console.log(task);
+
+        task.title = data.get('title');
+        task.description = data.get('description');
+        const project = data.get('project');
+        task.priority = data.get('priority');
+        task.dueDate = parseISO(data.get('due-date'));
+
+        deleteTaskFromProjects(task.getTaskID());
+        pushToProject(task, project);
     }
 
     function readyAllTasks() {
@@ -95,8 +148,8 @@ const App = (() => {
 
     function readyNewTask() {
         DOM.clearMainContent();
-        DOM.newTaskForm(projects);
-        document.querySelector('.task-form').addEventListener('submit', () => {
+        DOM.taskForm(projects);
+        document.querySelector('.task-form').addEventListener('submit', (e) => {
             const form = document.querySelector('.task-form');
             const data = new FormData(form);
             saveTask(data);
@@ -131,7 +184,6 @@ const App = (() => {
         DOM.newProjectForm();
         document.querySelector('.project-form').addEventListener('submit', () => {
             const form = document.querySelector('.project-form');
-            console.log(form);
             const data = new FormData(form);
             console.log(data.get('title'));
             saveProject(data);
@@ -144,8 +196,6 @@ const App = (() => {
     function saveProject(data) {
         const title = data.get('title');
         const description = data.get('description');
-
-        console.log(title, description);
 
         const newProject = Project(title, description);
         console.log(newProject);
@@ -163,7 +213,7 @@ const App = (() => {
         if (confirm("You want to delete this task?")) {
             deleteTaskFromProjects(button.dataset.id);
             deleteTask(button.dataset.id);
-            DOM.removeTask(button.parentElement);
+            DOM.removeTask(button.parentElement.parentElement);
         }
     }
 
