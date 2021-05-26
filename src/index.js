@@ -177,6 +177,7 @@ const App = (() => {
             const data = new FormData(form);
             saveTask(data);
             DOM.clearMainContent();
+            DOM.displaySortBar();
             DOM.displayTasks(tasks);
             captureButtons();
         });
