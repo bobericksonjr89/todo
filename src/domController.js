@@ -15,6 +15,16 @@ const DOM = (function() {
         }
     }
 
+    function clearTasks() {
+        const childNodes = mainContent.childNodes;
+        for (let i = childNodes.length - 1; i > 0; i--) {
+            if (childNodes[i].className.includes('task')) {
+                mainContent.removeChild(childNodes[i]);
+            }
+        }
+
+    }
+
     function taskView(button, task) {
         const parentDiv = button.parentElement.parentElement;
         if (parentDiv.dataset.expanded === 'true') {
@@ -57,6 +67,7 @@ const DOM = (function() {
     }
 
     function displayTasks(tasks) {
+        captureSortButtons(tasks);
         tasks.forEach(task => {
             const taskContainer = document.createElement('div')
             taskContainer.classList.add('task');
@@ -72,11 +83,13 @@ const DOM = (function() {
                 checkmarkDiv.innerText = '☐'
             }
             checkmarkDiv.setAttribute('data-id', task.getTaskID());
+            checkmarkDiv.tabIndex = 0;
 
             const titleDiv = document.createElement('div')
             titleDiv.classList.add('task__title', `task__title--priority${task.priority}`);
             titleDiv.innerText = task.title;
             titleDiv.setAttribute('data-id', task.getTaskID());
+            titleDiv.tabIndex = 0;
 
             const dueDateDiv = document.createElement('div')
             dueDateDiv.classList.add('task__due-date');
@@ -93,6 +106,52 @@ const DOM = (function() {
             taskContainer.append(taskShrunk);
             mainContent.append(taskContainer);
         })
+    }
+
+    function captureSortButtons(tasks) {
+        const sortByCheck = document.querySelector('.sort__checkmark');
+        sortByCheck.addEventListener('click', function() {
+            const sortedTasks = App.sortTasksByCompletionStatus(tasks);
+            clearTasks();
+            displayTasks(sortedTasks);
+            App.captureButtons();
+        });
+
+        const sortByPriority = document.querySelector('.sort__priority');
+        sortByPriority.addEventListener('click', function() {
+            const sortedTasks = App.sortTasksByPriority(tasks);
+            clearTasks();
+            displayTasks(sortedTasks);
+            App.captureButtons();
+        });
+
+        const sortByDueDate = document.querySelector('.sort__due-date');
+        sortByDueDate.addEventListener('click', function() {
+            const sortedTasks = App.sortTasksByDueDate(tasks);
+            clearTasks();
+            displayTasks(sortedTasks);
+            App.captureButtons();
+        })
+    }
+
+    function displaySortBar() {
+        const sortDiv = document.createElement('div')
+        sortDiv.classList.add('sort-bar');
+
+        const sortCheck = document.createElement('button');
+        sortCheck.classList.add('link', 'sort__checkmark');
+        sortCheck.innerText = "☑";
+
+        const sortPriority = document.createElement('button');
+        sortPriority.classList.add('link', 'sort__priority');
+        sortPriority.innerText = "Priority";
+
+        const sortDueDate = document.createElement('button');
+        sortDueDate.classList.add('link', 'sort__due-date');
+        sortDueDate.innerText = "Due Date";
+    
+        sortDiv.append(sortCheck, sortPriority, sortDueDate);    
+        mainContent.append(sortDiv);
     }
 
     function toggleCompletionIcon(button) {
@@ -132,7 +191,8 @@ const DOM = (function() {
         projectButton.classList.add('projects__project--active');
         clearMainContent();
         displayProjectHeader(project);
-        displayTasks(project.getTodoTasks())
+        displaySortBar();
+        displayTasks(project.getTodoTasks());
         App.captureButtons();
         resetAllTasksButton();
         resetProjectsButtons(projectButton);
@@ -337,7 +397,7 @@ const DOM = (function() {
         title.name = "title";
         title.placeholder = " Project Title";
         title.required = true;
-        title.setAttribute('maxlength', '25');
+        title.setAttribute('maxlength', '26');
         title.ariaLabel = "project title";
         
 
@@ -360,7 +420,19 @@ const DOM = (function() {
     }
 
 
-    return { clearMainContent, taskView, displayTasks, toggleCompletionIcon, clearProjectsList, toggleActiveStatus, displayProjects, removeTask, taskForm, newProjectForm };
+    return { 
+        clearMainContent,
+        taskView,
+        displayTasks,
+        toggleCompletionIcon,
+        clearProjectsList,
+        toggleActiveStatus,
+        displayProjects,
+        displaySortBar,
+        removeTask,
+        taskForm,
+        newProjectForm
+    };
 
 })();
 

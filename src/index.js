@@ -24,6 +24,14 @@ const App = (() => {
     window.item3 = item3;
     tasks.push(item3);
 
+    const item4 = Task("harvest spinach", "spinach is fully mature and needs to be harvested", new Date('May 26, 2021 23:15:30'), "2");
+    window.item4 = item4;
+    tasks.push(item4);
+
+    const item5 = Task("plant tomatoes", "plant tomatoes where the spinach was growing (don't forget to add fertilizer!)", new Date('May 26, 2021 23:15:30'), "1");
+    window.item5 = item5;
+    tasks.push(item5);
+
     const proj1 = Project("House Chores", "daily house chores to be done Monday-Friday, twice a day, and without fail.", "Friday");
     window.proj1 = proj1;
     proj1.addTodoTask(item1);
@@ -40,6 +48,7 @@ const App = (() => {
     window.projects = projects;
 
     // init
+    DOM.displaySortBar();
     DOM.displayTasks(tasks);
     captureButtons();
 
@@ -68,16 +77,28 @@ const App = (() => {
         completionButtons.forEach(button => button.addEventListener('click', function() {
             toggleCompletion(button);
         }));
+        completionButtons.forEach(button => button.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                button.click();
+            }
+        }))
 
         const taskTitles = document.querySelectorAll('.task__title');
         taskTitles.forEach(button => button.addEventListener('click', function (){
             readyTaskView(button);
         }));
+        taskTitles.forEach(button => button.addEventListener('keypress', function(e){
+            if (e.key === 'Enter') {
+                button.click();
+            }
+        }))
         
         const taskDueDates = document.querySelectorAll('.task__due-date');
         taskDueDates.forEach(button => button.addEventListener('click', function() {
             readyTaskView(button);
         }));
+
+        
     }
 
     function readyTaskView(button) {
@@ -104,6 +125,7 @@ const App = (() => {
                 console.log(data);
                 saveTaskEdit(data, task);
                 DOM.clearMainContent();
+                DOM.displaySortBar();
                 DOM.displayTasks(tasks);
                 captureButtons();
             });
@@ -132,6 +154,7 @@ const App = (() => {
             DOM.toggleActiveStatus(projectsLink.parentElement, 'sidebar--active');
         }
         DOM.clearMainContent();
+        DOM.displaySortBar();
         DOM.displayTasks(tasks);
         captureButtons();
     }
@@ -188,6 +211,7 @@ const App = (() => {
             console.log(data.get('title'));
             saveProject(data);
             DOM.clearMainContent();
+            DOM.displaySortBar();
             DOM.displayTasks(tasks);
             captureButtons();
         });
@@ -198,7 +222,6 @@ const App = (() => {
         const description = data.get('description');
 
         const newProject = Project(title, description);
-        console.log(newProject);
         projects.push(newProject);
     }
 
@@ -244,9 +267,21 @@ const App = (() => {
         }
     }
 
+    function sortTasksByCompletionStatus(tasksToSort){
+        return tasksToSort.slice().sort((a, b) => b.isComplete - a.isComplete)
+    }
+
+    function sortTasksByDueDate(tasksToSort) {
+        return tasksToSort.slice().sort((a, b) => a.dueDate - b.dueDate);
+    }
+
+    function sortTasksByPriority(tasksToSort) {
+        return tasksToSort.slice().sort((a, b) => b.priority - a.priority);
+    }
 
 
-    return { captureButtons, deleteProject, saveTask }
+
+    return { captureButtons, deleteProject, saveTask, sortTasksByCompletionStatus, sortTasksByDueDate, sortTasksByPriority }
 
 })();
 
