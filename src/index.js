@@ -48,6 +48,7 @@ const App = (() => {
     window.projects = projects;
 
     // init
+    DOM.displayAllTasksHeader();
     DOM.displaySortBar();
     DOM.displayTasks(tasks);
     captureButtons();
@@ -154,6 +155,7 @@ const App = (() => {
             DOM.toggleActiveStatus(projectsLink.parentElement, 'sidebar--active');
         }
         DOM.clearMainContent();
+        DOM.displayAllTasksHeader();
         DOM.displaySortBar();
         DOM.displayTasks(tasks);
         captureButtons();
@@ -177,6 +179,7 @@ const App = (() => {
             const data = new FormData(form);
             saveTask(data);
             DOM.clearMainContent();
+            DOM.displayAllTasksHeader();
             DOM.displaySortBar();
             DOM.displayTasks(tasks);
             captureButtons();
@@ -212,6 +215,7 @@ const App = (() => {
             console.log(data.get('title'));
             saveProject(data);
             DOM.clearMainContent();
+            DOM.displayAllTasksHeader();
             DOM.displaySortBar();
             DOM.displayTasks(tasks);
             captureButtons();
@@ -269,7 +273,7 @@ const App = (() => {
     }
 
     function sortTasksByCompletionStatus(tasksToSort){
-        return tasksToSort.slice().sort((a, b) => b.isComplete - a.isComplete)
+        return tasksToSort.slice().sort((a, b) => a.isComplete - b.isComplete)
     }
 
     function sortTasksByDueDate(tasksToSort) {

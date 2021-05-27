@@ -22,7 +22,6 @@ const DOM = (function() {
                 mainContent.removeChild(childNodes[i]);
             }
         }
-
     }
 
     function taskView(button, task) {
@@ -196,6 +195,18 @@ const DOM = (function() {
         App.captureButtons();
         resetAllTasksButton();
         resetProjectsButtons(projectButton);
+    }
+
+    function displayAllTasksHeader() {
+        const headerDiv = document.createElement('div');
+        headerDiv.classList.add('project-header');
+
+        const headerTitle = document.createElement('h3');
+        headerTitle.classList.add('project-header__title');
+        headerTitle.innerText = "All Tasks";
+
+        headerDiv.append(headerTitle);
+        mainContent.append(headerDiv);
     }
 
     function displayProjectHeader(project) {
@@ -419,15 +430,23 @@ const DOM = (function() {
         mainContent.append(container);
     }
 
+    function displayLoadedTasks(tasks){
+        displayAllTasksHeader();
+        displaySortBar();
+        displayTasks(tasks);
+    }
+
 
     return { 
         clearMainContent,
+        displayLoadedTasks,
         taskView,
         displayTasks,
         toggleCompletionIcon,
         clearProjectsList,
         toggleActiveStatus,
         displayProjects,
+        displayAllTasksHeader,
         displaySortBar,
         removeTask,
         taskForm,
