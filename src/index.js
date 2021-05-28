@@ -48,9 +48,7 @@ const App = (() => {
     window.projects = projects;
 
     // init
-    DOM.displayAllTasksHeader();
-    DOM.displaySortBar();
-    DOM.displayTasks(tasks);
+    DOM.displayTasksPage(tasks);
     captureButtons();
 
     // DOM capture
@@ -98,8 +96,6 @@ const App = (() => {
         taskDueDates.forEach(button => button.addEventListener('click', function() {
             readyTaskView(button);
         }));
-
-        
     }
 
     function readyTaskView(button) {
@@ -120,14 +116,13 @@ const App = (() => {
         editButton.addEventListener('click', function() {
             DOM.clearMainContent();
             DOM.taskForm(projects, task);
-            document.querySelector('.task-form').addEventListener('submit', function() {
+            document.querySelector('.task-form').addEventListener('submit', function(e) {
+                e.preventDefault();
                 const form = document.querySelector('.task-form');
                 const data = new FormData(form);
-                console.log(data);
                 saveTaskEdit(data, task);
                 DOM.clearMainContent();
-                DOM.displaySortBar();
-                DOM.displayTasks(tasks);
+                DOM.displayTasksPage(tasks);
                 captureButtons();
             });
         });
@@ -147,17 +142,12 @@ const App = (() => {
     }
 
     function readyAllTasks() {
-        if (!allTasksLink.className.includes('sidebar--active')) {
-            DOM.toggleActiveStatus(allTasksLink, 'sidebar--active')
-        }
         if (projectsLink.parentElement.className.includes('sidebar--active')) {
             DOM.clearProjectsList();
             DOM.toggleActiveStatus(projectsLink.parentElement, 'sidebar--active');
         }
         DOM.clearMainContent();
-        DOM.displayAllTasksHeader();
-        DOM.displaySortBar();
-        DOM.displayTasks(tasks);
+        DOM.displayTasksPage(tasks);
         captureButtons();
     }
 
@@ -175,13 +165,12 @@ const App = (() => {
         DOM.clearMainContent();
         DOM.taskForm(projects);
         document.querySelector('.task-form').addEventListener('submit', (e) => {
+            e.preventDefault();
             const form = document.querySelector('.task-form');
             const data = new FormData(form);
             saveTask(data);
             DOM.clearMainContent();
-            DOM.displayAllTasksHeader();
-            DOM.displaySortBar();
-            DOM.displayTasks(tasks);
+            DOM.displayTasksPage(tasks);
             captureButtons();
         });
     }
@@ -215,9 +204,7 @@ const App = (() => {
             console.log(data.get('title'));
             saveProject(data);
             DOM.clearMainContent();
-            DOM.displayAllTasksHeader();
-            DOM.displaySortBar();
-            DOM.displayTasks(tasks);
+            DOM.displayTasksPage(tasks);
             captureButtons();
         });
     }
@@ -271,9 +258,10 @@ const App = (() => {
             taskArray.forEach(task => deleteTask(task.getTaskID()));
         }
     }
+    
 
     function sortTasksByCompletionStatus(tasksToSort){
-        return tasksToSort.slice().sort((a, b) => a.isComplete - b.isComplete)
+        return tasksToSort.slice().sort((a, b) => a.isComplete - b.isComplete);
     }
 
     function sortTasksByDueDate(tasksToSort) {
@@ -284,9 +272,7 @@ const App = (() => {
         return tasksToSort.slice().sort((a, b) => b.priority - a.priority);
     }
 
-
-
-    return { captureButtons, deleteProject, saveTask, sortTasksByCompletionStatus, sortTasksByDueDate, sortTasksByPriority }
+    return { captureButtons, deleteProject, sortTasksByCompletionStatus, sortTasksByDueDate, sortTasksByPriority };
 
 })();
 

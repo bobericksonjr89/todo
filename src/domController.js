@@ -15,7 +15,7 @@ const DOM = (function() {
         }
     }
 
-    function clearTasks() {
+    function removeTasksFromMainContent() {
         const childNodes = mainContent.childNodes;
         for (let i = childNodes.length - 1; i > 0; i--) {
             if (childNodes[i].className.includes('task')) {
@@ -27,18 +27,18 @@ const DOM = (function() {
     function taskView(button, task) {
         const parentDiv = button.parentElement.parentElement;
         if (parentDiv.dataset.expanded === 'true') {
-            shrinkTask(parentDiv);
+            removeExpandedTask(parentDiv);
             return;
         }
-        parentDiv.style.height = '8rem';
+        parentDiv.classList.add('task--expanded-height')
         parentDiv.dataset.expanded = true;
 
         window.setTimeout(function() {
-            loadExpandedTask(parentDiv, task);
+            appendExpandedTask(parentDiv, task);
         }, 200);
     }
 
-    function loadExpandedTask(parentDiv, task) {
+    function appendExpandedTask(parentDiv, task) {
         const expandedDiv = document.createElement('div');
         expandedDiv.classList.add('task__more');
 
@@ -59,14 +59,13 @@ const DOM = (function() {
         parentDiv.append(expandedDiv);
     }
 
-    function shrinkTask(parentDiv) {
+    function removeExpandedTask(parentDiv) {
         parentDiv.removeChild(parentDiv.lastChild);
-        parentDiv.style.height = '4rem';
+        parentDiv.classList.remove('task--expanded-height');
         parentDiv.dataset.expanded = false;
     }
 
-    function displayTasks(tasks) {
-        captureSortButtons(tasks);
+    function appendTasksToMainContent(tasks) {
         tasks.forEach(task => {
             const taskContainer = document.createElement('div')
             taskContainer.classList.add('task');
@@ -107,50 +106,44 @@ const DOM = (function() {
         })
     }
 
-    function captureSortButtons(tasks) {
-        const sortByCheck = document.querySelector('.sort__checkmark');
-        sortByCheck.addEventListener('click', function() {
-            const sortedTasks = App.sortTasksByCompletionStatus(tasks);
-            clearTasks();
-            displayTasks(sortedTasks);
-            App.captureButtons();
-        });
-
-        const sortByPriority = document.querySelector('.sort__priority');
-        sortByPriority.addEventListener('click', function() {
-            const sortedTasks = App.sortTasksByPriority(tasks);
-            clearTasks();
-            displayTasks(sortedTasks);
-            App.captureButtons();
-        });
-
-        const sortByDueDate = document.querySelector('.sort__due-date');
-        sortByDueDate.addEventListener('click', function() {
-            const sortedTasks = App.sortTasksByDueDate(tasks);
-            clearTasks();
-            displayTasks(sortedTasks);
-            App.captureButtons();
-        })
-    }
-
-    function displaySortBar() {
+    function appendSortBarToMainContent(tasks) {
+        console.log(tasks);
         const sortDiv = document.createElement('div')
         sortDiv.classList.add('sort-bar');
 
         const sortCheck = document.createElement('button');
         sortCheck.classList.add('link', 'sort__checkmark');
         sortCheck.innerText = "☑";
+        sortCheck.addEventListener('click', function() {
+            const sortedTasks = App.sortTasksByCompletionStatus(tasks);
+            clearTasksAndAppendSortedTasks(sortedTasks);
+        });
 
         const sortPriority = document.createElement('button');
         sortPriority.classList.add('link', 'sort__priority');
         sortPriority.innerText = "Priority";
+        sortPriority.addEventListener('click', function() {
+            console.log(tasks);
+            const sortedTasks = App.sortTasksByPriority(tasks);
+            clearTasksAndAppendSortedTasks(sortedTasks);
+        });
 
         const sortDueDate = document.createElement('button');
         sortDueDate.classList.add('link', 'sort__due-date');
         sortDueDate.innerText = "Due Date";
+        sortDueDate.addEventListener('click', function() {
+            const sortedTasks = App.sortTasksByDueDate(tasks);
+            clearTasksAndAppendSortedTasks(sortedTasks);
+        })
     
         sortDiv.append(sortCheck, sortPriority, sortDueDate);    
         mainContent.append(sortDiv);
+    }
+
+    function clearTasksAndAppendSortedTasks(sortedTasks) {
+        removeTasksFromMainContent();
+        appendTasksToMainContent(sortedTasks)
+        App.captureButtons();
     }
 
     function toggleCompletionIcon(button) {
@@ -190,16 +183,15 @@ const DOM = (function() {
         projectButton.classList.add('projects__project--active');
         clearMainContent();
         displayProjectHeader(project);
-        displaySortBar();
-        displayTasks(project.getTodoTasks());
+        appendSortBarToMainContent(project.getTodoTasks());
+        appendTasksToMainContent(project.getTodoTasks());
         App.captureButtons();
-        resetAllTasksButton();
         resetProjectsButtons(projectButton);
     }
 
     function displayAllTasksHeader() {
         const headerDiv = document.createElement('div');
-        headerDiv.classList.add('project-header');
+        headerDiv.classList.add('tasks__header');
 
         const headerTitle = document.createElement('h3');
         headerTitle.classList.add('project-header__title');
@@ -233,14 +225,6 @@ const DOM = (function() {
     }
 
 
-    function resetAllTasksButton() {
-        document.querySelector('.sidebar__tasks').classList.remove('sidebar--active');
-    }
-
-    function resetProjectsButton() {
-        document.querySelector('.sidebar__projects-container').classList.remove('sidebar--active');
-    }
-
     function resetProjectsButtons(exceptThisProject) {
         const childNodes = projectsLink.childNodes;
         for (let i = childNodes.length - 1; i > 0; i--) {
@@ -256,7 +240,6 @@ const DOM = (function() {
 
     function readyDeleteProject(project) {
         if (confirm(`Do you really want to delete ${project.getTitle()}?`)) {
-            //removeProject();
             App.deleteProject(project);
             clearMainContent();
             projectsLink.click();
@@ -266,9 +249,7 @@ const DOM = (function() {
 
 
     function taskForm(projects, task) {
-        resetAllTasksButton();
         clearProjectsList();
-        resetProjectsButton();
 
         const container = document.createElement('div');
         container.classList.add('task-form__container');
@@ -367,6 +348,7 @@ const DOM = (function() {
         const submit = document.createElement('input');
         submit.classList.add('task-form__submit');
         submit.setAttribute('type', 'submit');
+        submit.value = "Save";
 
         if (task) {
             title.value = task.title;
@@ -380,7 +362,6 @@ const DOM = (function() {
 
             priority.value = task.priority;
             dueDate.valueAsDate = task.dueDate;
-            submit.dataset.isEdit = true;
         }
 
         rightDiv.append(priority, dueDateGroup, submit);
@@ -392,9 +373,7 @@ const DOM = (function() {
     }
 
     function newProjectForm() {
-        resetAllTasksButton();
         clearProjectsList();
-        resetProjectsButton();
 
         const container = document.createElement('div');
         container.classList.add('project-form__container');
@@ -423,6 +402,7 @@ const DOM = (function() {
         const submit = document.createElement('input');
         submit.classList.add('project-form__submit');
         submit.setAttribute('type', 'submit');
+        submit.value = "Save"
 
         formContainer.append(title, description, submit);
 
@@ -430,24 +410,21 @@ const DOM = (function() {
         mainContent.append(container);
     }
 
-    function displayLoadedTasks(tasks){
+    function displayTasksPage(tasks){
         displayAllTasksHeader();
-        displaySortBar();
-        displayTasks(tasks);
+        appendSortBarToMainContent(tasks);
+        appendTasksToMainContent(tasks);
     }
 
 
     return { 
         clearMainContent,
-        displayLoadedTasks,
+        displayTasksPage,
         taskView,
-        displayTasks,
         toggleCompletionIcon,
         clearProjectsList,
         toggleActiveStatus,
         displayProjects,
-        displayAllTasksHeader,
-        displaySortBar,
         removeTask,
         taskForm,
         newProjectForm
