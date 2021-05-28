@@ -31,17 +31,11 @@ img {
 -------------------*/
 
 html {
-    --eggshell: #fffcf2;
-    --terra-cotta: red;
-    --independence: #252422;
-    --green-sheen: green;
-    --deep-champagne: orange;
-
-/*     --eggshell: #f4f1deff;
-    --terra-cotta: #e07a5fff;
-    --independence: #3d405bff;
-    --green-sheen: #81b29aff;
-    --deep-champagne: #f2cc8fff; */
+    --white: #fffcf2;
+    --red: red;
+    --black: #252422;
+    --green: green;
+    --orange: orange;
 
     --header: 'Roboto', serif;
     --text: 'Noto Sans JP', sans-serif;
@@ -49,10 +43,8 @@ html {
     --width-main-content: calc(100vw - 19.2rem);
 }
 
-
-
 body {
-    background-color: var(--eggshell);
+    background-color: var(--white);
 }
 
 .main-content {
@@ -72,7 +64,7 @@ body {
 input:focus,
 select:focus,
 textarea:focus {
-    box-shadow: 2px 2px 5px 2px var(--independence), -2px -2px 5px 2px var(--independence);
+    box-shadow: 2px 2px 5px 2px var(--black), -2px -2px 5px 2px var(--black);
 }
 
 /*-------------------
@@ -80,8 +72,8 @@ textarea:focus {
 -------------------*/
 
 .header {
-    background-color: var(--independence);
-    color: var(--eggshell);
+    background-color: var(--black);
+    color: var(--white);
     font-family: var(--header);
 
     display: flex;
@@ -117,15 +109,16 @@ textarea:focus {
 .header__nav-link {
     display: inline-block;
     text-decoration: none;
-    color: var(--eggshell);
+    color: var(--white);
     font-family: var(--text);
     font-size: 1.5rem;
     transition: color 200ms ease-in-out;
+    cursor: pointer;
 }
 
 .header__nav-link:hover,
 .header__nav-link:focus {
-    color: var(--terra-cotta);
+    color: var(--red);
 }
 
 /*-------------------
@@ -142,8 +135,7 @@ textarea:focus {
 
 .sidebar {
     min-height: calc(100vh - 6rem);
-    /*width: 20rem;*/
-    border-right: 3px solid var(--independence);
+    border-right: 3px solid var(--black);
 }
 
 .sidebar__links {
@@ -158,7 +150,7 @@ textarea:focus {
     padding: 2px 2px 2px calc(2px + .5rem);
     text-decoration: none;
     font-family: var(--text);
-    color: var(--independence);
+    color: var(--black);
     width: 18rem;
     height: 3rem;
     transition: color 200ms ease-in-out;
@@ -177,37 +169,29 @@ textarea:focus {
     flex-direction: column;
 }
 
-.sidebar__tasks:hover,
-.sidebar__projects-container:hover,
-.sidebar__tasks:focus,
-.sidebar__projects-container:focus-within,
-.sidebar--active {
-    padding: 0;
-    padding-left: .5rem;
-    color: var(--independence);
-    border: var(--independence);
-}
-
-
 .sidebar__tasks {
     margin-bottom: 3rem;
 }
 
 .projects__project {
-    color: var(--independence);
+    color: var(--black);
     font-size: 1.5rem;
     margin: .25rem;
     transition: color 200ms ease-in-out;
     word-break: break-word;
 }
 
+.sidebar__tasks:hover,
+.sidebar__tasks:focus,
+.sidebar__projects:hover,
+.sidebar__projects:focus,
 .projects__project:hover,
 .projects__project:focus {
-    color:var(--terra-cotta);
+    color:var(--red);
 }
 
 .projects__project--active {
-    color: var(--terra-cotta);
+    color: var(--red);
 }
 
 /*-------------------
@@ -217,7 +201,7 @@ textarea:focus {
 .sort-bar {
     width: 100%;
     height: 3rem;
-    background: linear-gradient(135deg, var(--independence) 20%, 60%, var(--eggshell));
+    background: linear-gradient(135deg, var(--black) 20%, 60%, var(--white));
     display:flex;
     font-size: 2rem;
     font-family: var(--text);
@@ -226,7 +210,7 @@ textarea:focus {
 .sort__checkmark {
     margin: 0 1rem;
     cursor: pointer;
-    color: var(--eggshell);
+    color: var(--white);
     font-family: inherit;
 }
 
@@ -234,14 +218,14 @@ textarea:focus {
     margin-left: 1rem;
     margin-right: auto;
     cursor: pointer;
-    color: var(--eggshell);
+    color: var(--white);
     font-family: inherit;
 }
 
 .sort__due-date {
     margin-right: 9.5rem;
     cursor: pointer;
-    color: var(--independence);
+    color: var(--black);
     font-family: inherit;
 }
 
@@ -265,15 +249,26 @@ textarea:focus {
     task list
 -------------------*/
 
+.tasks__header {
+    display:flex;
+    height: 6rem;
+    width: var(--width-main-content);
+    justify-content: space-between;
+    align-items: center;
+    min-width: 45rem;
+}
+
 .task {
     height: 4rem;
-    width: var(--width-main-content);
-    min-width: 45rem;
+    width: 100%;
     font-family: var(--text);
     font-size: 2rem;
-    color: var(--independence);
+    color: var(--black);
     transition: height 200ms ease-in-out;
+}
 
+.task--expanded-height {
+    height: 8rem;
 }
 
 .task__shrunk {
@@ -290,12 +285,12 @@ textarea:focus {
     align-items: center;
     width: 100%;
     height: 4rem;
-    padding: 0 2rem 0 2rem;
     border-bottom: solid 1px black;
 }
 
 .task__description {
     font-size: 1.2rem;
+    margin-left: 2rem;
     margin-right: auto;
     width: 25rem;
     word-break: break-word;
@@ -308,7 +303,7 @@ textarea:focus {
 
 .task__edit {
     line-height: 2px;
-    margin-left: 1rem;
+    margin: 0 2rem 0 1rem;
     cursor: pointer;
     height: 2.2rem;
     width: 5.5rem;
@@ -322,8 +317,8 @@ textarea:focus {
 
 .task__edit:hover,
 .task__edit:focus {
-    background-color: var(--independence);
-    color: var(--eggshell);
+    background-color: var(--black);
+    color: var(--white);
 }
 
 .task__checkmark,
@@ -337,14 +332,14 @@ textarea:focus {
     width: auto;
 }
 
-.task__checkmark:focus {
-    background-color: var(--deep-champagne);
+.task__checkmark:focus-visible {
+    box-shadow: 1px 1px 4px 2px black;
 }
 
 .task__title {
     margin-right: auto;
-    min-width: 25rem;
     transition: filter 200ms ease-in-out;
+    word-break: break-word;
 }
 
 .task__title:hover,
@@ -360,15 +355,15 @@ textarea:focus {
 }
 
 .task__title--priority1 {
-    color: var(--green-sheen);
+    color: var(--green);
 }
 
 .task__title--priority2 {
-    color: var(--deep-champagne);
+    color: var(--orange);
 }
 
 .task__title--priority3 {
-    color: var(--terra-cotta);
+    color: var(--red);
 }
 
 .task__due-date {
@@ -397,8 +392,8 @@ textarea:focus {
 .project-header__delete:hover,
 .task__delete:focus,
 .project-header__delete:focus {
-    color: var(--eggshell);
-    background-color: var(--independence);
+    color: var(--white);
+    background-color: var(--black);
 }
 
 
@@ -417,7 +412,7 @@ textarea:focus {
 }
 
 .project-header__title {
-    color: var(--independence);
+    color: var(--black);
     font-family: var(--header);
     font-size: 2.5rem;
     margin: 0 1rem;
@@ -426,7 +421,7 @@ textarea:focus {
 }
 
 .project-header__description {
-    color: var(--independence);
+    color: var(--black);
     font-family: var(--text);
     font-size: 1.5rem;
     margin: 0 1rem;
@@ -453,7 +448,7 @@ textarea:focus {
     margin-top: 5rem;
     width: 40rem;
     height: 16rem;
-    border: 3px solid var(--independence);
+    border: 3px solid var(--black);
     border-radius: 1rem;
     font-family: var(--text);
     display:flex;
@@ -481,8 +476,8 @@ textarea:focus {
     font-family: inherit;
     height: 3rem;
     font-size: 1.5rem;
-    border: 2px solid var(--independence);
-    background-color: var(--eggshell);
+    border: 2px solid var(--black);
+    background-color: var(--white);
 }
 
 .task-form__description {
@@ -490,24 +485,24 @@ textarea:focus {
     height: 6rem;
     font-size: 1rem;
     resize: none;
-    border: 2px solid var(--independence);
-    background-color: var(--eggshell);
+    border: 2px solid var(--black);
+    background-color: var(--white);
 }
 
 .task-form__projects {
     font-family: inherit;
     height: 2rem;
     font-size: 1rem;
-    border: 2px solid var(--independence);
-    background-color: var(--eggshell);
+    border: 2px solid var(--black);
+    background-color: var(--white);
 }
 
 .task-form__priority {
     font-family: inherit;
     height: 2rem;
     font-size: 1rem;
-    border: 2px solid var(--independence);
-    background-color: var(--eggshell);
+    border: 2px solid var(--black);
+    background-color: var(--white);
 }
 
 .task-form__form-group {
@@ -525,8 +520,8 @@ textarea:focus {
     width: 100%;
     height: 2rem;
     font-size: 1rem;
-    border: 2px solid var(--independence);
-    background-color: var(--eggshell);
+    border: 2px solid var(--black);
+    background-color: var(--white);
 }
 
 .task-form__submit {
@@ -536,15 +531,17 @@ textarea:focus {
     font-size: 1rem;
     font-family: inherit;
     cursor: pointer;
-    background-color: var(--eggshell);
+    background-color: var(--white);
+    color: var(--black);
     border: 2px solid black;
     border-radius: .5rem;
     transition: all 200ms ease-in-out;
 }
 
-.task-form__submit:hover {
-    color: var(--eggshell);
-    background-color: var(--independence);
+.task-form__submit:hover,
+.task-form__submit:focus {
+    color: var(--white);
+    background-color: var(--black);
 }
 
 /*-------------------
@@ -563,7 +560,7 @@ textarea:focus {
     margin-top: 5rem;
     width: 40rem;
     height: 16rem;
-    border: 3px solid var(--independence);
+    border: 3px solid var(--black);
     border-radius: 1rem;
     font-family: var(--text);
     display:flex;
@@ -576,8 +573,8 @@ textarea:focus {
     width: 21.8rem;
     height: 3rem;
     font-size: 1.5rem;
-    border: 2px solid var(--independence);
-    background-color: var(--eggshell);
+    border: 2px solid var(--black);
+    background-color: var(--white);
 }
 
 .project-form__description {
@@ -585,8 +582,8 @@ textarea:focus {
     height: 6rem;
     font-size: 1.5rem;
     resize: none;
-    border: 2px solid var(--independence);
-    background-color: var(--eggshell);
+    border: 2px solid var(--black);
+    background-color: var(--white);
 }
 
 .project-form__submit {
@@ -596,7 +593,8 @@ textarea:focus {
     font-size: 1rem;
     font-family: inherit;
     cursor: pointer;
-    background-color: var(--eggshell);
+    color: var(--black);
+    background-color: var(--white);
     border: 2px solid black;
     border-radius: .5rem;
     transition: all 200ms ease-in-out;
@@ -604,6 +602,283 @@ textarea:focus {
 
 .project-form__submit:hover,
 .project-form__submit:focus {
-    color: var(--eggshell);
-    background-color: var(--independence);
+    color: var(--white);
+    background-color: var(--black);
+}
+
+/*-------------------
+    media
+-------------------*/
+
+@media only screen and (max-width: 87rem) {
+    .sidebar__links {
+        font-size: 1.5rem;
+    }
+
+    .sidebar__tasks {
+        width: 7rem;
+    }
+
+    .sidebar__projects-container {
+        width: 10rem;
+    }
+
+    .projects__project {
+        font-size: 1.1rem;
+    }
+
+    .main-content {
+        width: calc(100vw - 11.2rem);
+    }
+
+    .tasks__header {
+        width: 100%;
+        min-width: 0;
+    }
+
+    .project-header {
+        width: 100%;
+        min-width: 0;
+    }
+
+    .project-header__title {
+        font-size: 1.5rem;
+        min-width: 10rem;
+    }
+
+    .project-header__description {
+        font-size: 1rem;
+        min-width: 10rem;
+    }
+
+    .task__checkmark,
+    .sort__checkmark {
+        font-size: 1.5rem;
+    }
+
+    .task__title,
+    .sort__priority {
+        font-size: 1.5rem;
+    }
+
+    .task__description {
+        width: fit-content;
+        margin-left: 1rem;
+    }
+
+    .sort__due-date,
+    .task__due-date {
+        min-width: 0;
+        font-size: 1.5rem;
+    }
+
+    .sort__due-date {
+        margin-right: 7rem;
+    }
+
+    .project-header__delete,
+    .task__delete,
+    .task__edit {
+        margin: 0 .5rem;
+        font-size: 1.1rem;
+        width: 5.5rem;
+
+    }
+
+    .task__more {
+        line-height: 1.2;
+    }
+
+    .task__description,
+    .task__date-added {
+        font-size: 1rem;
+
+    }
+
+}
+
+@media only screen and (max-width: 62.5rem) {
+    .task-form,
+    .project-form {
+        flex-direction: column;
+        align-items: center;
+        justify-content: space-between;
+        height: 25rem;
+        width: 20rem;
+    }
+
+    .task-form__left-side {
+        width: 100%;
+        height: 40rem;
+    }
+
+    .task-form__right-side {
+        padding-top: 0;
+        width: 100%;
+        height: 30rem;
+    }
+
+    .project-form__description {
+        height: 70%;
+    }
+
+    .project-form__title,
+    .project-form__description,
+    .project-form__submit {
+        width: 100%;
+    }
+}
+
+
+@media only screen and (max-width: 45rem) {
+    
+    
+    .header {
+        width: 100%;
+    }
+    
+    .header__subtitle {
+        font-size: 1rem;
+    }
+
+    .header__nav-list {
+        margin: 0;
+    }
+
+    .header__nav-link {
+        font-size: 1.25rem;
+    }
+
+    .main {
+        flex-direction: column;
+        justify-content: center;
+    }
+
+    .sidebar {
+        border-right: none;
+        min-height: 0;
+        max-height: 4rem;
+    }
+
+    .sidebar__tasks {
+        padding: 0;
+        height: 2rem;
+        margin-bottom: 0;
+    }
+
+    .sidebar__links {
+        margin: 1rem 0;
+        flex-direction: row;
+        justify-content: space-around;
+    }
+
+    .projects__project {
+
+    }
+
+    .sidebar--active {
+        background-color: var(--white);
+        border-bottom: 1px solid black;
+        border-left: 1px solid black;
+        border-right: 1px solid black;
+        z-index: 1;
+    }
+
+
+
+    .main-content {
+        width: 100%;
+    }
+
+    .sort__priority {
+        font-size: 1.2rem;
+    }
+
+    .sort__due-date {
+        font-size: 1.2rem;
+        margin-right: 5rem;
+    }
+
+    .tasks__header {
+        display: none;
+    }
+
+    .task__checkmark,
+    .sort__checkmark {
+        margin: 0 0 0 .5rem;
+    }
+
+    .task--expanded-height {
+        height: 10rem;
+    }
+
+    .task__due-date {
+        font-size: 1rem;
+        min-width: 4.5rem;
+        margin-right: .25rem;
+    }
+
+    .task__title {
+        font-size: 1.2rem;
+        margin: 0 .5rem;
+    }
+
+    .task__delete,
+    .task__edit,
+    .project-header__delete {
+        font-size: 1rem;
+        width: 4rem;
+        height: 2rem;
+    }
+
+    .task__edit {
+        margin-bottom: .25rem;
+    }
+
+    .task__more {
+        height: 5rem;
+    }
+
+    .task__description {
+        margin: .25rem 0 .25rem .25rem;
+    }
+
+    .project-header {
+        flex-direction: column;
+        justify-content: space-around;
+        height: 8rem;
+    }
+
+    .project-header__title {
+        font-size: 1.2rem;
+    }
+
+    .project-header__description {
+        margin: .25rem .5rem;
+        font-size: .9rem;
+    }
+
+    .task-form__container,
+    .project-form__container {
+        width: 100%;
+    }
+}
+
+@media only screen and (max-width: 20rem) {
+    .task__title {
+        font-size: .9rem;
+    }
+
+    .task--expanded-height {
+        height: 13rem;
+    }
+
+    .task__more {
+        height: 9rem;
+    }
+
+    .task-form,
+    .project-form {
+        width: 17rem;
+    }
 }
