@@ -8,44 +8,75 @@ import { parseISO } from 'date-fns';
 
 const App = (() => {
 
+
+    
     const tasks = [];
     window.tasks = tasks;
     const projects = [];
-
-    const item1 = Task("clean", "clean the whole house", new Date('May 30, 2021 23:15:30'), "1");
-    window.item1 = item1;
-    tasks.push(item1);
-
-    const item2 = Task("work", "work hard", new Date('May 23, 2021 23:15:30'), "2");
-    window.item2 = item2;
-    tasks.push(item2);
-
-    const item3 = Task("study", "daily house chores to be done Monday-Friday, twice a day, and without fail", new Date('May 26, 2021 23:15:30'), "3");
-    window.item3 = item3;
-    tasks.push(item3);
-
-    const item4 = Task("harvest spinach", "spinach is fully mature and needs to be harvested", new Date('May 26, 2021 23:15:30'), "2");
-    window.item4 = item4;
-    tasks.push(item4);
-
-    const item5 = Task("plant tomatoes", "plant tomatoes where the spinach was growing (don't forget to add fertilizer!)", new Date('May 26, 2021 23:15:30'), "1");
-    window.item5 = item5;
-    tasks.push(item5);
-
-    const proj1 = Project("House Chores", "daily house chores to be done Monday-Friday, twice a day, and without fail.", "Friday");
-    window.proj1 = proj1;
-    proj1.addTodoTask(item1);
-    proj1.addTodoTask(item2);
-    projects.push(proj1);
-
-    const proj2 = Project("Make Todo App", "work on it every day", "May 20th");
-    window.proj2 = proj2;
-    proj2.addTodoTask(item3);
-    projects.push(proj2);
-
-    const proj3 = Project('Third Project', "do it good", "Monday");
-    projects.push(proj3);
     window.projects = projects;
+
+    if (!localStorage.getItem('projects')) {
+        const item1 = Task("clean", "clean the whole house", "1", new Date('May 30, 2021 23:15:30'));
+        window.item1 = item1;
+        tasks.push(item1);
+
+        const item2 = Task("work", "work hard", "2", new Date('May 23, 2021 23:15:30'));
+        window.item2 = item2;
+        tasks.push(item2);
+
+        const item3 = Task("study", "study goooood", "3", new Date('May 26, 2021 23:15:30'));
+        window.item3 = item3;
+        tasks.push(item3);
+
+        const item4 = Task("harvest spinach", "spinach is fully mature and needs to be harvested", "2", new Date('May 26, 2021 23:15:30'));
+        window.item4 = item4;
+        tasks.push(item4);
+
+        const item5 = Task("plant tomatoes", "plant tomatoes where the spinach was growing (don't forget to add fertilizer!)", "1", new Date('May 26, 2021 23:15:30'));
+        window.item5 = item5;
+        tasks.push(item5);
+
+        const proj1 = Project("House Chores", "daily house chores to be done Monday-Friday, twice a day, and without fail.");
+        window.proj1 = proj1;
+        proj1.addTodoTask(item1);
+        proj1.addTodoTask(item2);
+        projects.push(proj1);
+
+        const proj2 = Project("Make Todo App", "work on it every day");
+        window.proj2 = proj2;
+        proj2.addTodoTask(item3);
+        projects.push(proj2);
+
+        const proj3 = Project('Third Project', "do it good");
+        projects.push(proj3);
+        window.projects = projects;
+
+        if (storageAvailable('localStorage')) {
+            saveTaskToStorage();
+            saveProjectToStorage();
+        }
+    } else {
+        const storedTasks = getTasksFromStorage();
+        window.storedTasks = storedTasks;
+        storedTasks.forEach((task) => {
+            const newTask = Task(...Object.values(task));
+            tasks.push(newTask);
+        });
+
+        const storedProjects = getProjectsFromStorage();
+        storedProjects.forEach((project) => {
+            const projectTasks = project.todoTasks;
+            project.todoTasks = [];
+
+            projectTasks.forEach((task) => {
+                project.todoTasks.push(tasks.find(item => item.taskID === task.taskID));
+            });
+            const newProject = Project(...Object.values(project));
+
+            projects.push(newProject)
+        });
+        
+    }
 
     // init
     DOM.displayTasksPage(tasks);
@@ -100,7 +131,7 @@ const App = (() => {
 
     function readyTaskView(button) {
         const taskID = button.dataset.id;
-        const task = tasks.find(task => task.getTaskID() === parseInt(taskID));
+        const task = tasks.find(task => task.taskID === parseInt(taskID));
         DOM.taskView(button, task);
         window.setTimeout(function() {
             captureEditButton(task, taskID);
@@ -124,21 +155,31 @@ const App = (() => {
                 DOM.clearMainContent();
                 DOM.displayTasksPage(tasks);
                 captureButtons();
+                if (storageAvailable('localStorage')) {
+                    saveTaskToStorage();
+                  }
             });
         });
     }
 
     function saveTaskEdit(data, task) {
-        console.log(task);
-
-        task.title = data.get('title');
-        task.description = data.get('description');
+        const dateAdded = task.dateAdded;
+        const taskID = task.taskID;
+        const isComplete = task.isComplete;
+        const title = data.get('title');
+        const description = data.get('description');
         const project = data.get('project');
-        task.priority = data.get('priority');
-        task.dueDate = parseISO(data.get('due-date'));
+        const priority = data.get('priority');
+        const dueDate = parseISO(data.get('due-date'));
 
-        deleteTaskFromProjects(task.getTaskID());
-        pushToProject(task, project);
+        deleteTaskFromProjects(task.taskID);
+        deleteTask(task.taskID);
+
+        const newTask = Task(title, description, priority, dueDate, taskID, isComplete, dateAdded);
+
+        tasks.push(newTask);
+        
+        pushToProject(newTask, project);
     }
 
     function readyAllTasks() {
@@ -182,17 +223,25 @@ const App = (() => {
         const priority = data.get('priority');
         const dueDate = parseISO(data.get('due-date'));
 
-        const newTask = Task(title, description, dueDate, priority);
+        const newTask = Task(title, description, priority, dueDate,);
         tasks.push(newTask);
 
         pushToProject(newTask, project);
+
+        if (storageAvailable('localStorage')) {
+            saveTaskToStorage();
+            location.reload();
+          }
     }
 
     function pushToProject(task, projectTitle) {
-        console.log(projectTitle);
         if (projectTitle === '') return;
-        const project = projects.find(project => project.getTitle() === projectTitle)
+        const project = projects.find(project => project.title === projectTitle)
         project.addTodoTask(task);
+
+        if (storageAvailable('localStorage')) {
+            saveProjectToStorage();
+          }
     }
 
     function readyNewProject() {
@@ -201,7 +250,6 @@ const App = (() => {
         document.querySelector('.project-form').addEventListener('submit', () => {
             const form = document.querySelector('.project-form');
             const data = new FormData(form);
-            console.log(data.get('title'));
             saveProject(data);
             DOM.clearMainContent();
             DOM.displayTasksPage(tasks);
@@ -215,47 +263,67 @@ const App = (() => {
 
         const newProject = Project(title, description);
         projects.push(newProject);
+        if (storageAvailable('localStorage')) {
+            saveProjectToStorage();
+          }
     }
 
     function toggleCompletion(button) {
         const taskID = button.dataset.id;
-        const task = tasks.find(task => task.getTaskID() === parseInt(taskID));
+        const task = tasks.find(task => task.taskID === parseInt(taskID));
         task.toggleCompletionStatus();
         DOM.toggleCompletionIcon(button);
+        if (storageAvailable('localStorage')) {
+            saveTaskToStorage();
+          }
     }
 
     function confirmDeletion(button) {
         if (confirm("You want to delete this task?")) {
             deleteTaskFromProjects(button.dataset.id);
             deleteTask(button.dataset.id);
-            DOM.removeTask(button.parentElement.parentElement);
+            DOM.removeTask(button.parentElement.parentElement)
+            if (storageAvailable('localStorage')) {
+                saveTaskToStorage();
+              }
         }
     }
 
     function deleteTask(taskID) { 
-            const index = tasks.findIndex(task => task.getTaskID() === parseInt(taskID));
+            const index = tasks.findIndex(task => task.taskID === parseInt(taskID));
             tasks.splice(index, 1);
     }
 
     function deleteTaskFromProjects(taskID) {
-        const taskToDelete = tasks.find(task => task.getTaskID() === parseInt(taskID));
+        const taskToDelete = tasks.find(task => task.taskID === parseInt(taskID));
         projects.forEach((project) => {
-            if (project.getTodoTasks().includes(taskToDelete)) {
+            if (project.todoTasks.includes(taskToDelete)) {
                 project.removeTodoTask(taskToDelete);
+                if (storageAvailable('localStorage')) {
+                    saveProjectToStorage();
+                }
             }
         });
     }
 
     function deleteProject(project) {
         confirmDeleteTasks(project);
-        const index = projects.findIndex(item => item.getProjectID() === project.getProjectID());
+        const index = projects.findIndex(item => item.projectID === project.projectID);
         projects.splice(index, 1);
+        if (storageAvailable('localStorage')) {
+            saveProjectToStorage();
+        }
     }
 
     function confirmDeleteTasks(project) {
         if (confirm('Do you also want to delete its tasks?')) {
-            const taskArray = project.getTodoTasks();
-            taskArray.forEach(task => deleteTask(task.getTaskID()));
+            const taskArray = project.todoTasks;
+            taskArray.forEach(task => {
+                deleteTask(task.taskID);
+                if (storageAvailable('localStorage')) {
+                    saveTaskToStorage();
+                  }
+            });
         }
     }
     
@@ -272,6 +340,59 @@ const App = (() => {
         return tasksToSort.slice().sort((a, b) => b.priority - a.priority);
     }
 
+    // From Mozilla Web Docs
+    function storageAvailable(type) {
+        var storage;
+        try {
+            storage = window[type];
+            var x = '__storage_test__';
+            storage.setItem(x, x);
+            storage.removeItem(x);
+            return true;
+        }
+        catch(e) {
+            return e instanceof DOMException && (
+                // everything except Firefox
+                e.code === 22 ||
+                // Firefox
+                e.code === 1014 ||
+                // test name field too, because code might not be present
+                // everything except Firefox
+                e.name === 'QuotaExceededError' ||
+                // Firefox
+                e.name === 'NS_ERROR_DOM_QUOTA_REACHED') &&
+                // acknowledge QuotaExceededError only if there's something already stored
+                (storage && storage.length !== 0);
+        }
+    }
+
+
+    function getTasksFromStorage() {
+        let storageTasks = JSON.parse(localStorage.getItem('tasks'));
+        window.storageTasks = storageTasks;
+        return storageTasks;
+    }
+
+    function getProjectsFromStorage() {
+        let storageProjects = JSON.parse(localStorage.getItem('projects'));
+        window.storageProjects = storageProjects;
+        return storageProjects;
+    }
+
+    function saveProjectToStorage() {
+        localStorage.setItem('projects', JSON.stringify(projects));
+    }
+
+    function saveTaskToStorage() {
+        localStorage.setItem('tasks', JSON.stringify(tasks));
+    }
+
+   /*  const storedLibrary = JSON.parse(localStorage.getObj('myLibrary'));
+
+    Storage.prototype.getObj = function(key) {
+        return JSON.parse(this.getItem(key))
+    }
+ */
     return { captureButtons, deleteProject, sortTasksByCompletionStatus, sortTasksByDueDate, sortTasksByPriority };
 
 })();

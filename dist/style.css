@@ -268,7 +268,7 @@ textarea:focus {
 }
 
 .task--expanded-height {
-    height: 8rem;
+    height: 9rem;
 }
 
 .task__shrunk {
@@ -284,7 +284,7 @@ textarea:focus {
     justify-content: space-between;
     align-items: center;
     width: 100%;
-    height: 4rem;
+    height: 5rem;
     border-bottom: solid 1px black;
 }
 

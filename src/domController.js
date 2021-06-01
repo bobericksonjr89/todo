@@ -17,10 +17,8 @@ const DOM = (function() {
 
     function removeTasksFromMainContent() {
         const childNodes = mainContent.childNodes;
-        for (let i = childNodes.length - 1; i > 0; i--) {
-            if (childNodes[i].className.includes('task')) {
-                mainContent.removeChild(childNodes[i]);
-            }
+        for (let i = childNodes.length - 1; i > 2; i--) {
+            mainContent.removeChild(childNodes[i]);
         }
     }
 
@@ -53,7 +51,7 @@ const DOM = (function() {
         const edit = document.createElement('button');
         edit.innerText = "Edit";
         edit.classList.add('task__edit');
-        edit.setAttribute('data-id', task.getTaskID())
+        edit.setAttribute('data-id', task.taskID)
 
         expandedDiv.append(description, dateAdded, edit);
         parentDiv.append(expandedDiv);
@@ -80,24 +78,24 @@ const DOM = (function() {
             } else {
                 checkmarkDiv.innerText = '☐'
             }
-            checkmarkDiv.setAttribute('data-id', task.getTaskID());
+            checkmarkDiv.setAttribute('data-id', task.taskID);
             checkmarkDiv.tabIndex = 0;
 
             const titleDiv = document.createElement('div')
             titleDiv.classList.add('task__title', `task__title--priority${task.priority}`);
             titleDiv.innerText = task.title;
-            titleDiv.setAttribute('data-id', task.getTaskID());
+            titleDiv.setAttribute('data-id', task.taskID);
             titleDiv.tabIndex = 0;
 
             const dueDateDiv = document.createElement('div')
             dueDateDiv.classList.add('task__due-date');
             const dueDate = task.parseDueDate();
             dueDateDiv.innerText = dueDate; 
-            dueDateDiv.setAttribute('data-id', task.getTaskID());
+            dueDateDiv.setAttribute('data-id', task.taskID);
 
             const deleteButton = document.createElement('button')
             deleteButton.classList.add('task__delete');
-            deleteButton.setAttribute('data-id', task.getTaskID());
+            deleteButton.setAttribute('data-id', task.taskID);
             deleteButton.innerText = 'Delete';
 
             taskShrunk.append(checkmarkDiv, titleDiv, dueDateDiv, deleteButton);
@@ -107,7 +105,6 @@ const DOM = (function() {
     }
 
     function appendSortBarToMainContent(tasks) {
-        console.log(tasks);
         const sortDiv = document.createElement('div')
         sortDiv.classList.add('sort-bar');
 
@@ -123,7 +120,6 @@ const DOM = (function() {
         sortPriority.classList.add('link', 'sort__priority');
         sortPriority.innerText = "Priority";
         sortPriority.addEventListener('click', function() {
-            console.log(tasks);
             const sortedTasks = App.sortTasksByPriority(tasks);
             clearTasksAndAppendSortedTasks(sortedTasks);
         });
@@ -142,7 +138,7 @@ const DOM = (function() {
 
     function clearTasksAndAppendSortedTasks(sortedTasks) {
         removeTasksFromMainContent();
-        appendTasksToMainContent(sortedTasks)
+        appendTasksToMainContent(sortedTasks);
         App.captureButtons();
     }
 
@@ -169,7 +165,7 @@ const DOM = (function() {
         projects.forEach((project) => {
             const projectButton = document.createElement('button');
             projectButton.classList.add('link', 'projects__project');
-            projectButton.innerText = project.getTitle();
+            projectButton.innerText = project.title;
             projectButton.addEventListener('click', (e) => {
                 e.stopPropagation();
                 readyProjectTasks(projectButton, project);
@@ -183,8 +179,8 @@ const DOM = (function() {
         projectButton.classList.add('projects__project--active');
         clearMainContent();
         displayProjectHeader(project);
-        appendSortBarToMainContent(project.getTodoTasks());
-        appendTasksToMainContent(project.getTodoTasks());
+        appendSortBarToMainContent(project.todoTasks);
+        appendTasksToMainContent(project.todoTasks);
         App.captureButtons();
         resetProjectsButtons(projectButton);
     }
@@ -207,11 +203,11 @@ const DOM = (function() {
         
         const projectHeaderTitle = document.createElement('h3');
         projectHeaderTitle.classList.add('project-header__title');
-        projectHeaderTitle.innerText = project.getTitle();
+        projectHeaderTitle.innerText = project.title;
 
         const projectHeaderDescription = document.createElement('p');
         projectHeaderDescription.classList.add('project-header__description');
-        projectHeaderDescription.innerText = project.getDescription();
+        projectHeaderDescription.innerText = project.description;
 
         const projectHeaderDeleteButton = document.createElement('button');
         projectHeaderDeleteButton.classList.add('project-header__delete');
@@ -239,7 +235,7 @@ const DOM = (function() {
     };
 
     function readyDeleteProject(project) {
-        if (confirm(`Do you really want to delete ${project.getTitle()}?`)) {
+        if (confirm(`Do you really want to delete ${project.title}?`)) {
             App.deleteProject(project);
             clearMainContent();
             projectsLink.click();
@@ -297,8 +293,8 @@ const DOM = (function() {
 
         projects.forEach(project => {
             const option = document.createElement('option');
-            option.setAttribute('value', project.getTitle());
-            option.innerText = project.getTitle();
+            option.setAttribute('value', project.title);
+            option.innerText = project.title;
             projectsSelect.append(option);
         });
         
@@ -353,10 +349,10 @@ const DOM = (function() {
         if (task) {
             title.value = task.title;
             description.value = task.description;
-            
+
             projects.forEach((project) => {
-                if (project.getTodoTasks().includes(task)) {
-                    projectsSelect.value = project.getTitle();
+                if (project.todoTasks.includes(task)) {
+                    projectsSelect.value = project.title;
                 }
             });
 
@@ -413,7 +409,7 @@ const DOM = (function() {
     function displayTasksPage(tasks){
         displayAllTasksHeader();
         appendSortBarToMainContent(tasks);
-        appendTasksToMainContent(tasks);
+        appendTasksToMainContent(tasks.slice().sort((a, b) => a.taskID - b.taskID));
     }
 
 

@@ -2,14 +2,21 @@ import { add, format, isYesterday, isPast, isToday, isTomorrow, isSunday, isMond
 
 let ID = 0;
 
-const Task = (title, description, dueDate, priority) => {
-
-    const dateAdded = new Date(Date.now());
+const Task = (title, description, priority, dueDate, 
+  taskID = ID,
+  isComplete = false,
+  dateAdded = new Date(Date.now())) => {
     
-    const taskID = ID++;
-    const getTaskID = () => taskID;
+    ID++
 
-    let isComplete = false;
+    if (typeof dateAdded === "string") {
+        dateAdded = new Date(dateAdded);
+    }
+
+    if (typeof dueDate === "string") {
+        dueDate = new Date(dueDate);
+    }
+
     function toggleCompletionStatus() {
         if (this.isComplete === false) {
             this.isComplete = true;
@@ -51,7 +58,7 @@ const Task = (title, description, dueDate, priority) => {
         return format(dateAdded, "MMM do',' yyyy");
     }
 
-    return { title, description, priority, dueDate, getTaskID, isComplete, toggleCompletionStatus, parseDueDate, parseDateAdded }
+    return { title, description, priority, dueDate, taskID, isComplete, dateAdded, toggleCompletionStatus, parseDueDate, parseDateAdded }
 } 
 
 export default Task
