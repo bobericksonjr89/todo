@@ -1,6 +1,8 @@
 let ID = 0;
 
-const Project = (title, description, projectID = ID, todoTasks = []) => {
+const Project = (title, description,
+                    projectID = ID,
+                    todoTasks = []) => {
     ID++;
 
     function addTodoTask(task) {

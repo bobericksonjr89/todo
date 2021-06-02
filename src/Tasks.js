@@ -3,9 +3,9 @@ import { add, format, isYesterday, isPast, isToday, isTomorrow, isSunday, isMond
 let ID = 0;
 
 const Task = (title, description, priority, dueDate, 
-  taskID = ID,
-  isComplete = false,
-  dateAdded = new Date(Date.now())) => {
+                taskID = ID,
+                isComplete = false,
+                dateAdded = new Date(Date.now())) => {
     
     ID++
 

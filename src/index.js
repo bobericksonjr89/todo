@@ -5,51 +5,43 @@ import DOM from './domController.js';
 import { parseISO } from 'date-fns';
 
 
-
 const App = (() => {
 
-
-    
     const tasks = [];
-    window.tasks = tasks;
     const projects = [];
-    window.projects = projects;
 
     if (!localStorage.getItem('projects')) {
-        const item1 = Task("clean", "clean the whole house", "1", new Date('May 30, 2021 23:15:30'));
-        window.item1 = item1;
+        const item1 = Task("clean", "clean the bedroom and hall floors", "1", new Date('June 3, 2021 23:15:30'));
         tasks.push(item1);
 
-        const item2 = Task("work", "work hard", "2", new Date('May 23, 2021 23:15:30'));
-        window.item2 = item2;
+        const item2 = Task("buy work shoes", "need new shoes for work weekend starting Saturday", "2", new Date('June 5, 2021 23:15:30'));
         tasks.push(item2);
 
-        const item3 = Task("study", "study goooood", "3", new Date('May 26, 2021 23:15:30'));
-        window.item3 = item3;
+        const item3 = Task("debug app", "find and correct all local storage and user interface bugs", "3", new Date('June 4, 2021 23:15:30'));
         tasks.push(item3);
 
-        const item4 = Task("harvest spinach", "spinach is fully mature and needs to be harvested", "2", new Date('May 26, 2021 23:15:30'));
-        window.item4 = item4;
+        const item4 = Task("harvest spinach", "spinach is fully mature and needs to be harvested", "2", new Date('June 2, 2021 23:15:30'));
         tasks.push(item4);
 
-        const item5 = Task("plant tomatoes", "plant tomatoes where the spinach was growing (don't forget to add fertilizer!)", "1", new Date('May 26, 2021 23:15:30'));
-        window.item5 = item5;
+        const item5 = Task("plant tomatoes", "plant tomatoes where the spinach was growing (and don't forget to add fertilizer)", "1", new Date('June 3, 2021 23:15:30'));
         tasks.push(item5);
 
-        const proj1 = Project("House Chores", "daily house chores to be done Monday-Friday, twice a day, and without fail.");
-        window.proj1 = proj1;
+        const item6 = Task("upload app to github pages", "gotta do all that goofy webpack shiz first", "1", new Date('June 4, 2021 23:15:30'));
+        tasks.push(item6);
+
+        const proj1 = Project("House", "stuff that's got to be done around the house");
         proj1.addTodoTask(item1);
-        proj1.addTodoTask(item2);
         projects.push(proj1);
 
         const proj2 = Project("Make Todo App", "work on it every day");
-        window.proj2 = proj2;
         proj2.addTodoTask(item3);
+        proj2.addTodoTask(item6);
         projects.push(proj2);
 
-        const proj3 = Project('Third Project', "do it good");
+        const proj3 = Project('Garden', "always something to do in the garden");
+        proj3.addTodoTask(item4);
+        proj3.addTodoTask(item5);
         projects.push(proj3);
-        window.projects = projects;
 
         if (storageAvailable('localStorage')) {
             saveTaskToStorage();
@@ -57,7 +49,6 @@ const App = (() => {
         }
     } else {
         const storedTasks = getTasksFromStorage();
-        window.storedTasks = storedTasks;
         storedTasks.forEach((task) => {
             const newTask = Task(...Object.values(task));
             tasks.push(newTask);
@@ -176,9 +167,7 @@ const App = (() => {
         deleteTask(task.taskID);
 
         const newTask = Task(title, description, priority, dueDate, taskID, isComplete, dateAdded);
-
         tasks.push(newTask);
-        
         pushToProject(newTask, project);
     }
 
@@ -241,7 +230,7 @@ const App = (() => {
 
         if (storageAvailable('localStorage')) {
             saveProjectToStorage();
-          }
+        }
     }
 
     function readyNewProject() {
@@ -290,8 +279,8 @@ const App = (() => {
     }
 
     function deleteTask(taskID) { 
-            const index = tasks.findIndex(task => task.taskID === parseInt(taskID));
-            tasks.splice(index, 1);
+        const index = tasks.findIndex(task => task.taskID === parseInt(taskID));
+        tasks.splice(index, 1);
     }
 
     function deleteTaskFromProjects(taskID) {
@@ -322,7 +311,7 @@ const App = (() => {
                 deleteTask(task.taskID);
                 if (storageAvailable('localStorage')) {
                     saveTaskToStorage();
-                  }
+                }
             });
         }
     }
@@ -369,13 +358,11 @@ const App = (() => {
 
     function getTasksFromStorage() {
         let storageTasks = JSON.parse(localStorage.getItem('tasks'));
-        window.storageTasks = storageTasks;
         return storageTasks;
     }
 
     function getProjectsFromStorage() {
         let storageProjects = JSON.parse(localStorage.getItem('projects'));
-        window.storageProjects = storageProjects;
         return storageProjects;
     }
 
@@ -387,12 +374,6 @@ const App = (() => {
         localStorage.setItem('tasks', JSON.stringify(tasks));
     }
 
-   /*  const storedLibrary = JSON.parse(localStorage.getObj('myLibrary'));
-
-    Storage.prototype.getObj = function(key) {
-        return JSON.parse(this.getItem(key))
-    }
- */
     return { captureButtons, deleteProject, sortTasksByCompletionStatus, sortTasksByDueDate, sortTasksByPriority };
 
 })();
