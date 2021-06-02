@@ -32,10 +32,10 @@ img {
 
 html {
     --white: #fffcf2;
-    --red: red;
+    --red: #ff595e;
     --black: #252422;
-    --green: green;
-    --orange: orange;
+    --green: #8ac926;
+    --orange: #ffca3a;
 
     --header: 'Roboto', serif;
     --text: 'Noto Sans JP', sans-serif;
@@ -235,7 +235,7 @@ textarea:focus {
 .sort__priority:hover,
 .sort__due-date:focus,
 .sort__due-date:hover {
-    filter: saturate(200%);
+    filter: saturate(500%);
     outline: none;
     text-decoration: underline;
 }
@@ -784,8 +784,6 @@ textarea:focus {
         z-index: 1;
     }
 
-
-
     .main-content {
         width: 100%;
     }
@@ -846,11 +844,13 @@ textarea:focus {
     .project-header {
         flex-direction: column;
         justify-content: space-around;
+        align-items: center;
         height: 8rem;
     }
 
     .project-header__title {
         font-size: 1.2rem;
+        text-align: center;
     }
 
     .project-header__description {
