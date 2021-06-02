@@ -768,6 +768,11 @@ textarea:focus {
         margin-bottom: 0;
     }
 
+    .sidebar__projects-container {
+        height: 2rem;
+        padding: 0;
+    }
+
     .sidebar__links {
         margin: 1rem 0;
         flex-direction: row;
@@ -780,6 +785,11 @@ textarea:focus {
         border-left: 1px solid black;
         border-right: 1px solid black;
         z-index: 1;
+        height: auto;
+    }
+
+    .sidebar__projects {
+        background-color: inherit;
     }
 
     .main-content {
@@ -817,6 +827,7 @@ textarea:focus {
     .task__title {
         font-size: 1.2rem;
         margin: 0 .5rem;
+        max-width: 10rem;
     }
 
     .task__delete,
