@@ -866,11 +866,11 @@ textarea:focus {
     }
 
     .task-form__left-side {
-        height: 20rem;
+        height: 14rem;
     }
 
     .task-form__right-side {
-        height: 20rem;
+        height: 11rem;
     }
 }
 
