@@ -774,10 +774,6 @@ textarea:focus {
         justify-content: space-around;
     }
 
-    .projects__project {
-
-    }
-
     .sidebar--active {
         background-color: var(--white);
         border-bottom: 1px solid black;
@@ -863,6 +859,18 @@ textarea:focus {
     .task-form__container,
     .project-form__container {
         width: 100%;
+    }
+
+    .task-form__container {
+        height: 30rem;
+    }
+
+    .task-form__left-side {
+        height: 20rem;
+    }
+
+    .task-form__right-side {
+        height: 20rem;
     }
 }
 
