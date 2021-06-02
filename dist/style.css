@@ -791,6 +791,8 @@ textarea:focus {
 
     .sidebar__projects {
         background-color: inherit;
+        margin: 0;
+        padding: 0;
     }
 
     .main-content {
