@@ -764,14 +764,14 @@ textarea:focus {
 
     .sidebar__tasks {
         padding: 0;
-        height: 2rem;
-        margin-bottom: 0;
+        height: 2.1rem;
+        margin: 0;
     }
 
     .sidebar__projects-container {
-        height: 2rem;
+        height: 2.1rem;
         padding: 0;
-        margin-bottom: 0;
+        margin: 0;
     }
 
     .sidebar__links {
