@@ -859,6 +859,7 @@ textarea:focus {
         justify-content: space-around;
         align-items: center;
         height: 8rem;
+
     }
 
     .project-header__title {
@@ -869,6 +870,7 @@ textarea:focus {
     .project-header__description {
         margin: .25rem .5rem;
         font-size: .9rem;
+        min-width: 1rem;
     }
 
     .task-form__container,
