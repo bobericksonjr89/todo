@@ -431,10 +431,6 @@ textarea:focus {
     word-break: break-word;
 }
 
-.project-header__delete {
-    /* see above */
-}
-
 /*-------------------
     task-form
 -------------------*/
